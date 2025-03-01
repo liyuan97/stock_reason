@@ -1,25 +1,23 @@
-# 股票事件追踪系统 (Stock Event Tracker)
+# 股票事件追踪系统后端 (Stock Event Tracker Backend)
 
-## 产品思路
+## 项目概述
 
-市场波动的背后总有原因，但当我们回顾历史行情时，很难记住过去的涨跌背后发生了什么。本系统旨在解决这一问题：将市场事件与股票走势关联起来，帮助投资者更全面地理解市场变动的原因。
+提供股票事件追踪系统的后端 API 服务，支持事件记录、查询和分析，实现股票行情与重要事件的关联展示。
 
-核心价值：
-- 直观可视化事件与行情的关联性
-- 按重要程度（1-5级）分类展示事件
-- 帮助投资者形成更完整的市场认知
+## 技术栈
 
-## 设计思路
+- Python 3.10+
+- FastAPI 框架
+- SQLAlchemy ORM
+- PostgreSQL 数据库
+- Redis 缓存
+- JWT 认证
+- Alembic 数据库迁移
+- LangChain + LLM 新闻分析
 
-本系统采用前后端分离架构：
+## 系统设计
 
-### 前端设计
-- 基于 React + TypeScript  + lightweight-charts
-- 使用 TradingView Lightweight Charts 提供专业级别的金融图表
-- 在图表上以彩色标记展示不同等级的事件
-- 响应式设计，同时支持桌面和移动设备
-
-### 后端设计
+### 后端架构
 - 基于 FastAPI 构建的 RESTful API
 - 使用 SQLAlchemy ORM 进行数据库操作
 - JWT 认证保护 API 端点
@@ -36,107 +34,45 @@
 
 ### 数据流设计
 ```
-用户请求 → 前端展示 ← API服务 ← 数据库 ← LLM新闻分析
-```
-
-## 系统架构图
-
-```
-+------------------+    +-------------------+    +------------------+
-|                  |    |                   |    |                  |
-|  React 前端      |    |   FastAPI 后端    |    |  PostgreSQL 数据库|
-|                  |    |                   |    |                  |
-+------------------+    +-------------------+    +------------------+
-        ↑                        ↑                        ↑
-        |                        |                        |
-        ↓                        ↓                        ↓
-+------------------+    +-------------------+    +------------------+
-|                  |    |                   |    |                  |
-| TradingView      |    | LLM 服务          |    |  Redis 缓存      |
-| Charts           |    | (新闻分析)         |    |                  |
-+------------------+    +-------------------+    +------------------+
+API请求 → FastAPI处理 → 业务逻辑 → 数据库/缓存 ← LLM新闻分析
 ```
 
 ## 项目结构
 
 ```
-stock_reason/
-├── frontend/
-│   ├── public/
-│   │   ├── index.html
-│   │   └── assets/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Chart/
-│   │   │   ├── EventMarker/
-│   │   │   ├── Timeline/
-│   │   │   └── StockSearch/
-│   │   ├── services/
-│   │   ├── utils/
-│   │   ├── types/
-│   │   ├── styles/
-│   │   ├── App.tsx
-│   │   └── index.tsx
-│   ├── package.json
-│   └── tsconfig.json
-├── backend/
-│   ├── app/
-│   │   ├── api/
-│   │   │   ├── endpoints/
-│   │   │   ├── dependencies/
-│   │   │   └── middleware/
-│   │   ├── core/
-│   │   │   ├── config.py
-│   │   │   └── security.py
-│   │   ├── db/
-│   │   │   ├── models/
-│   │   │   └── session.py
-│   │   ├── services/
-│   │   │   ├── stock_service.py
-│   │   │   └── event_service.py
-│   │   ├── llm/
-│   │   │   ├── news_analyzer.py
-│   │   │   └── event_extractor.py
-│   │   └── main.py
-│   ├── tests/
-│   ├── alembic/
-│   ├── requirements.txt
-│   └── Dockerfile
-├── docker-compose.yml
-├── .github/
-│   └── workflows/
-└── README.md
+backend/
+├── app/
+│   ├── api/
+│   │   ├── endpoints/     # API 路由定义
+│   │   ├── dependencies/  # 依赖注入
+│   │   └── middleware/    # 中间件
+│   ├── core/
+│   │   ├── config.py      # 配置管理
+│   │   └── security.py    # 安全相关
+│   ├── db/
+│   │   ├── models/        # 数据模型
+│   │   └── session.py     # 数据库会话
+│   ├── services/
+│   │   ├── stock_service.py  # 股票服务
+│   │   └── event_service.py  # 事件服务
+│   ├── llm/
+│   │   ├── news_analyzer.py  # 新闻分析
+│   │   └── event_extractor.py # 事件提取
+│   └── main.py            # 应用入口
+├── tests/                 # 测试用例
+├── alembic/               # 数据库迁移
+├── pyproject.toml         # 项目依赖配置
+├── uv.lock                # 依赖锁定文件
+└── requirements.txt       # 依赖说明（已弃用，仅保留参考）
 ```
 
 ## 安装与启动
 
-### 前端开发环境
+### 开发环境设置
 
 1. 克隆仓库
 ```bash
 git clone https://github.com/yourusername/stock_reason.git
-cd stock_reason/frontend
-```
-
-2. 安装依赖
-```bash
-npm install
-```
-
-3. 启动开发服务器
-```bash
-npm start
-```
-
-4. 在浏览器中访问
-```
-http://localhost:3000
-```
-
-### 后端开发环境
-
-1. 进入后端目录
-```bash
 cd stock_reason/backend
 ```
 
@@ -173,7 +109,9 @@ uvicorn app.main:app --reload
 http://localhost:8000/docs
 ```
 
-### 添加新依赖
+### 依赖管理
+
+#### 添加新依赖
 
 当需要添加新依赖时，按照以下步骤操作：
 
@@ -189,7 +127,7 @@ uv pip compile pyproject.toml -o uv.lock
 uv pip sync uv.lock
 ```
 
-### 开发依赖
+#### 开发依赖
 
 如需安装开发工具（如代码格式化、类型检查等），可以使用：
 
@@ -197,76 +135,44 @@ uv pip sync uv.lock
 uv pip install -e ".[dev]"
 ```
 
-### 使用Docker部署
+### 数据库迁移
+
+使用 Alembic 进行数据库迁移：
 
 ```bash
-docker-compose up -d
+# 创建迁移文件
+alembic revision --autogenerate -m "描述你的变更"
+
+# 应用迁移
+alembic upgrade head
 ```
 
-## 功能说明
+### 部署指南
 
-### 当前实现功能
+#### 使用Docker部署
 
-1. **股票K线图显示**
-   - 支持缩放和平移
-   - 显示OHLC蜡烛图
-   - 自适应容器大小
+```bash
+# 在项目根目录
+docker-compose up -d backend
+```
 
-2. **事件标记与展示**
-   - 在图表上显示1-5级事件标记
-   - 点击标记查看事件详情
-   - 按等级筛选事件显示
+#### 手动部署
 
-3. **股票搜索**
-   - 输入股票代码查询不同股票数据（如AAPL、MSFT等）
+```bash
+cd backend
+# 安装 uv
+pip install uv
+# 创建虚拟环境
+uv venv
+source .venv/bin/activate  # 在Windows上使用 .venv\Scripts\activate
+# 安装依赖
+uv pip install -e .
+uv pip sync
+# 配置环境变量
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
 
-4. **事件时间线**
-   - 展示所有相关事件的时间线
-   - 点击事件跳转至对应时间点
-
-### 计划功能
-
-1. **后端集成**
-   - 实现事件存储和管理API
-   - 通过LLM分析新闻并自动提取事件
-
-2. **数据扩展**
-   - 支持更多市场和指数
-   - 集成更多历史事件数据
-
-3. **用户功能**
-   - 用户自定义事件添加
-   - 个人收藏和笔记
-   - 事件影响分析报告
-   - 自定义提醒
-
-4. **社区功能**
-   - 用户贡献事件和评分
-   - 讨论区和评论系统
-
-## 项目路线图
-
-### 第一阶段 (MVP) - 2023年Q3
-- ✅ 基础图表展示功能
-- ✅ 静态事件标记和显示
-- ✅ 基本的股票搜索
-
-### 第二阶段 - 2023年Q4
-- ✅ 事件时间线功能
-- ✅ 事件筛选功能
-- 🔄 后端API开发
-
-### 第三阶段 - 2024年Q1
-- 🔄 LLM新闻分析集成
-- 🔄 用户账户系统
-- 🔄 自定义事件添加
-
-### 第四阶段 - 2024年Q2
-- 📅 社区功能
-- 📅 高级数据分析
-- 📅 移动应用开发
-
-## 接口文档
+## API 接口文档
 
 完整的API文档可通过启动后端服务后访问：
 ```
@@ -293,107 +199,44 @@ http://localhost:8000/redoc  # ReDoc
    - `POST /api/users/login` - 用户登录
    - `GET /api/users/me` - 获取当前用户信息
 
-## 屏幕截图
+## 测试
 
-*此处将添加应用界面截图，展示主要功能*
+本项目使用 pytest 进行自动化测试：
 
-1. 主界面
-2. 事件标记与详情
-3. 时间线展示
-4. 搜索功能
+```bash
+# 运行所有测试
+pytest
+
+# 运行特定测试模块
+pytest tests/test_api.py
+
+# 生成测试覆盖率报告
+pytest --cov=app
+```
+
+## 环境变量配置
+
+创建 `.env` 文件在项目根目录，包含以下环境变量：
+
+```
+# 数据库配置
+DATABASE_URL=postgresql+psycopg://user:password@localhost/dbname
+
+# 安全配置
+SECRET_KEY=your_secret_key_here
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# Redis配置
+REDIS_URL=redis://localhost:6379/0
+
+# 其他配置
+ENVIRONMENT=development
+```
 
 ## 数据来源
 
-目前版本使用：
 - 行情数据：Yahoo Finance非官方API
-- 事件数据：模拟生成（后续将接入真实数据）
-
-计划接入：
-- 财经新闻源（如新浪财经、东方财富）
-- 公司公告数据
-- 宏观经济数据
-
-## 测试策略
-
-本项目采用多层次测试策略：
-
-1. 单元测试
-   - 前端组件测试：Jest + React Testing Library
-   - 后端函数测试：Pytest
-
-2. 集成测试
-   - API端点测试
-   - 数据流测试
-
-3. 端到端测试
-   - 使用Cypress进行关键用户流程测试
-
-运行测试：
-```bash
-# 前端测试
-cd frontend
-npm test
-
-# 后端测试
-cd backend
-pytest
-```
-
-## 技术栈
-
-### 前端
-- React 17+
-- TypeScript 4+
-- TradingView Lightweight Charts
-- Axios
-- CSS3 (自定义样式)
-- Jest
-
-### 后端
-- Python 3.9+
-- FastAPI
-- SQLAlchemy
-- LangChain
-- Pytest
-- Redis
-- PostgreSQL
-
-## 部署指南
-
-### 使用Docker部署
-
-1. 确保安装了Docker和Docker Compose
-2. 克隆仓库
-3. 配置环境变量（可复制`.env.example`为`.env`并填写配置）
-4. 执行部署命令
-```bash
-docker-compose up -d
-```
-
-### 手动部署
-
-#### 前端
-```bash
-cd frontend
-npm install
-npm run build
-# 将build目录部署到您的Web服务器
-```
-
-#### 后端
-```bash
-cd backend
-# 安装 uv
-pip install uv
-# 创建虚拟环境
-uv venv
-source .venv/bin/activate  # 在Windows上使用 .venv\Scripts\activate
-# 安装依赖
-uv pip install -e .
-uv pip sync
-# 配置环境变量
-uvicorn app.main:app --host 0.0.0.0 --port 8000
-```
+- 事件数据：用户输入与LLM新闻分析
 
 ## 许可证
 
@@ -401,45 +244,17 @@ MIT
 
 ## 贡献指南
 
-我们非常欢迎社区贡献！以下是参与项目的方式：
-
-### 贡献流程
+我们欢迎社区贡献！请参照以下步骤：
 
 1. Fork本仓库
-2. 创建您的特性分支 (`git checkout -b feature/amazing-feature`)
+2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
 3. 提交您的更改 (`git commit -m 'Add some amazing feature'`)
-4. 将您的更改推送到分支 (`git push origin feature/amazing-feature`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
 5. 打开Pull Request
-
-### 贡献类型
-
-我们欢迎以下类型的贡献：
-- 代码改进和新功能
-- 文档完善
-- Bug修复
-- 测试用例
-- UI/UX设计改进
-- 新闻源集成
-- 数据分析算法
 
 ### 代码规范
 
-- 请遵循项目现有的代码风格
-- 添加适当的注释
-- 确保通过所有测试
-- 新功能请同时添加测试
-
-### Issue提交
-
-如果您发现了问题但没有时间修复，请提交Issue：
-- 清晰描述问题
-- 提供复现步骤
-- 如可能，附上截图或日志
-- 标记相关标签
-
-## 联系方式
-
-- 项目负责人：[您的姓名]
-- 邮箱：[您的邮箱]
-- 微信：[您的微信]
-- GitHub: [您的GitHub主页] 
+- 遵循PEP 8编码规范
+- 使用类型注解
+- 为所有函数和类添加文档字符串
+- 编写单元测试 
