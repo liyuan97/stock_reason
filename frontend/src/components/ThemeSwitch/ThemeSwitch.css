@@ -1,0 +1,14 @@
+.theme-switch {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.theme-switch .ant-switch-checked {
+  background-color: #1e88e5;
+}
+
+.theme-switch .ant-switch {
+  background-color: #001529;
+} 

@@ -1,0 +1,23 @@
+# 此项目已迁移到使用 pyproject.toml 和 uv 进行依赖管理
+# 请查看 pyproject.toml 获取依赖列表
+# 安装依赖请使用：
+#   pip install uv
+#   uv pip install -e .
+
+# 以下是迁移前的依赖列表（仅供参考）：
+# fastapi==0.103.1
+# uvicorn==0.23.2
+# sqlalchemy==2.0.20
+# pydantic==2.3.0
+# alembic==1.12.0
+# psycopg2-binary==2.9.7
+# httpx==0.25.0
+# python-jose==3.3.0
+# passlib==1.7.4
+# python-multipart==0.0.6
+# redis==5.0.0
+# tenacity==8.2.3
+# asyncio==3.4.3
+# aioredis==2.0.1
+# python-dotenv==1.0.0
+# pytest==7.4.0

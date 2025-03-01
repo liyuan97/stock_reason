@@ -1,0 +1,83 @@
+/* 定义浅色主题变量 */
+:root {
+  --background-color: #f5f5f5;
+  --text-color: #333333;
+  --card-background: #ffffff;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --border-color: #e8e8e8;
+  --primary-color: #1e88e5;
+  --secondary-color: #4caf50;
+  --warning-color: #ffc107;
+  --error-color: #f44336;
+  --info-color: #2196f3;
+  --hover-color: rgba(0, 0, 0, 0.05);
+}
+
+/* 定义深色主题变量 */
+[data-theme='dark'] {
+  --background-color: #121212;
+  --text-color: #e0e0e0;
+  --card-background: #1e1e1e;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --border-color: #303030;
+  --primary-color: #2196f3;
+  --secondary-color: #66bb6a;
+  --warning-color: #ffb74d;
+  --error-color: #ef5350;
+  --info-color: #42a5f5;
+  --hover-color: rgba(255, 255, 255, 0.05);
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error {
+  padding: 1rem;
+  background-color: #ffebee;
+  color: #b71c1c;
+  border-radius: 4px;
+  margin: 1rem 0;
+}
+
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+.error-message {
+  color: var(--error-color);
+  padding: 1rem;
+  margin: 1rem 0;
+  background-color: rgba(244, 67, 54, 0.1);
+  border-radius: 4px;
+  border-left: 4px solid var(--error-color);
+} 
