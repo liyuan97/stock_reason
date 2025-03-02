@@ -318,5 +318,21 @@
     "impact": "positive",
     "created_at": "2025-03-02T00:00:00.000000",
     "updated_at": "2025-03-02T00:00:00.000000"
+  },
+  {
+    "id": 3021,
+    "title": "川普当选美国总统",
+    "description": "川普当选提升市场信心，特斯拉股票价格升至400美元。",
+    "start_time": 1730764800,
+    "end_time": null,
+    "level": 5,
+    "stock_symbol": "TSLA",
+    "sources": ["CNN", "Fox News", "Bloomberg"],
+    "urls": ["https://www.cnn.com/2024/11/05/politics/trump-elected-president/index.html", "https://www.foxnews.com/politics/trump-wins-2024-election", "https://www.bloomberg.com/articles/2024-11-05/trump-s-victory-sends-markets-soaring"],
+    "duration_type": "sudden",
+    "category": "market_sentiment",
+    "impact": "positive",
+    "created_at": "2025-03-02T00:00:00.000000",
+    "updated_at": "2025-03-02T00:00:00.000000"
   }
 ]
