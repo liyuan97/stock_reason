@@ -60,6 +60,62 @@ const EventTimeline: React.FC<EventTimelineProps> = ({ events, onEventSelect, se
     }
   };
   
+  // 为每个日期组创建Timeline项目
+  const createTimelineItems = (date: string) => {
+    return groupedEvents[date].map(event => ({
+      key: event.id,
+      color: getLevelColor(event.level),
+      children: (
+        <Card
+          size="small"
+          style={{ 
+            marginBottom: '8px',
+            cursor: 'pointer',
+            borderLeft: `2px solid ${getLevelColor(event.level)}`,
+            backgroundColor: selectedEvent?.id === event.id 
+              ? (isDarkTheme ? '#303030' : '#f0f7ff') 
+              : (isDarkTheme ? '#262626' : '#fff'),
+            color: isDarkTheme ? '#e0e0e0' : 'inherit'
+          }}
+          onClick={() => onEventSelect(event)}
+        >
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <Space>
+              <Tag color={getLevelColor(event.level)}>
+                级别 {event.level}
+              </Tag>
+              <Text type="secondary" style={{ color: isDarkTheme ? '#aaa' : '' }}>
+                {new Date(event.time * 1000).toLocaleTimeString('zh-CN', {
+                  hour: '2-digit', 
+                  minute: '2-digit'
+                })}
+              </Text>
+            </Space>
+            
+            <Text 
+              strong 
+              style={{ 
+                color: isDarkTheme ? '#e0e0e0' : '#333' 
+              }}
+            >
+              {event.title}
+            </Text>
+            
+            <Paragraph 
+              ellipsis={{ rows: 2 }}
+              style={{ 
+                margin: 0,
+                color: isDarkTheme ? '#bbb' : '#666' 
+              }}
+            >
+              {event.description}
+            </Paragraph>
+          </Space>
+        </Card>
+      )
+    }));
+  };
+  
   return (
     <div className="timeline-container">
       {dates.length === 0 ? (
@@ -82,61 +138,7 @@ const EventTimeline: React.FC<EventTimelineProps> = ({ events, onEventSelect, se
               {date}
             </Title>
             
-            <Timeline>
-              {groupedEvents[date].map(event => (
-                <Timeline.Item 
-                  key={event.id} 
-                  color={getLevelColor(event.level)}
-                >
-                  <Card
-                    size="small"
-                    style={{ 
-                      marginBottom: '8px',
-                      cursor: 'pointer',
-                      borderLeft: `2px solid ${getLevelColor(event.level)}`,
-                      backgroundColor: selectedEvent?.id === event.id 
-                        ? (isDarkTheme ? '#303030' : '#f0f7ff') 
-                        : (isDarkTheme ? '#262626' : '#fff'),
-                      color: isDarkTheme ? '#e0e0e0' : 'inherit'
-                    }}
-                    onClick={() => onEventSelect(event)}
-                  >
-                    <Space direction="vertical" style={{ width: '100%' }}>
-                      <Space>
-                        <Tag color={getLevelColor(event.level)}>
-                          级别 {event.level}
-                        </Tag>
-                        <Text type="secondary" style={{ color: isDarkTheme ? '#aaa' : '' }}>
-                          {new Date(event.time * 1000).toLocaleTimeString('zh-CN', {
-                            hour: '2-digit', 
-                            minute: '2-digit'
-                          })}
-                        </Text>
-                      </Space>
-                      
-                      <Text 
-                        strong 
-                        style={{ 
-                          color: isDarkTheme ? '#e0e0e0' : '#333' 
-                        }}
-                      >
-                        {event.title}
-                      </Text>
-                      
-                      <Paragraph 
-                        ellipsis={{ rows: 2 }}
-                        style={{ 
-                          margin: 0,
-                          color: isDarkTheme ? '#bbb' : '#666' 
-                        }}
-                      >
-                        {event.description}
-                      </Paragraph>
-                    </Space>
-                  </Card>
-                </Timeline.Item>
-              ))}
-            </Timeline>
+            <Timeline items={createTimelineItems(date)} />
           </div>
         ))
       )}

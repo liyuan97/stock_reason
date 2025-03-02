@@ -34,7 +34,7 @@ const DataSourceInfo: React.FC<DataSourceInfoProps> = ({ dataSource }) => {
           <Text strong>模拟数据提示：</Text> 当前显示的是模拟数据，非真实股票数据。
           <br />
           <Text type="secondary">
-            无法连接到雅虎财经API，可能是由于跨域(CORS)限制或网络问题。
+            无法连接到雅虎财经API，可能是由于网络问题或代理服务器未运行。
           </Text>
         </>
       );
@@ -43,7 +43,7 @@ const DataSourceInfo: React.FC<DataSourceInfoProps> = ({ dataSource }) => {
   
   // 确定Alert类型
   const getAlertType = () => {
-    return dataSource === 'yahoo' ? 'info' : 'warning';
+    return dataSource === 'mock' ? 'warning' : 'info';
   };
   
   return (
@@ -66,7 +66,7 @@ const DataSourceInfo: React.FC<DataSourceInfoProps> = ({ dataSource }) => {
         marginBottom: '16px', 
         boxShadow: currentTheme === 'dark' ? '0 2px 8px rgba(0, 0, 0, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.1)',
         background: currentTheme === 'dark' 
-          ? (dataSource === 'yahoo' ? 'rgba(24, 144, 255, 0.1)' : 'rgba(250, 173, 20, 0.1)') 
+          ? (dataSource !== 'mock' ? 'rgba(24, 144, 255, 0.1)' : 'rgba(250, 173, 20, 0.1)') 
           : ''
       }}
     />

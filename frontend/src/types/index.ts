@@ -28,6 +28,7 @@ export interface StockEvent {
   level: EventLevel;
   source?: string;
   url?: string;
+  impact?: 'positive' | 'negative' | 'neutral';
 }
 
 // 图表配置类型

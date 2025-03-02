@@ -3,7 +3,7 @@ import useWindowSize from './useWindowSize';
 
 // 用于处理图表容器尺寸变化的自定义Hook
 const useChartResize = (
-  containerRef: RefObject<HTMLDivElement>,
+  containerRef: RefObject<HTMLDivElement | null>,
   onResize: (width: number, height: number) => void
 ): void => {
   const windowSize = useWindowSize();

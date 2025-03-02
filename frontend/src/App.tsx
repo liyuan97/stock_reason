@@ -8,8 +8,9 @@ import SearchBar from './components/StockSearch/SearchBar';
 import ThemeSwitch from './components/ThemeSwitch/ThemeSwitch';
 import StarRating from './components/EventFilter/StarRating';
 import DataSourceInfo from './components/DataSourceInfo/DataSourceInfo';
+import DataSourceSelector from './components/DataSourceInfo/DataSourceSelector';
 import { StockEvent, StockData, EventLevel } from './types';
-import { getStockData, lastDataSource } from './services/api';
+import { getStockData, lastDataSource, DataSource } from './services/api';
 import { useTheme } from './context/ThemeContext';
 import './styles/App.css';
 
@@ -27,7 +28,8 @@ const App: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<StockEvent | null>(null);
   const [showEventDetail, setShowEventDetail] = useState<boolean>(false);
   const [minimumLevel, setMinimumLevel] = useState<number | undefined>(undefined);
-  const [dataSource, setDataSource] = useState<'yahoo' | 'mock'>('mock');
+  const [dataSource, setDataSource] = useState<DataSource>('yahoo'); // 默认使用Alpha Vantage
+  const [preferredDataSource, setPreferredDataSource] = useState<DataSource>('yahoo'); // 用户首选数据源
   
   // 获取股票数据
   useEffect(() => {
@@ -35,7 +37,11 @@ const App: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        const data = await getStockData(selectedStock);
+        
+        console.log(`[App] 使用首选数据源 ${preferredDataSource} 获取数据`);
+        
+        // 使用用户选择的首选数据源
+        const data = await getStockData(selectedStock, preferredDataSource);
         
         // 检查返回的数据是否完整
         if (data.prices.length > 0) {
@@ -45,7 +51,7 @@ const App: React.FC = () => {
         }
         
         setStockData(data);
-        setDataSource(lastDataSource); // 获取最新的数据来源
+        setDataSource(lastDataSource); // 更新实际使用的数据源
       } catch (err) {
         setError('获取股票数据失败，请稍后重试');
         console.error(err);
@@ -55,7 +61,7 @@ const App: React.FC = () => {
     };
     
     fetchStockData();
-  }, [selectedStock]);
+  }, [selectedStock, preferredDataSource]);
   
   // 处理事件点击
   const handleEventClick = (event: StockEvent) => {
@@ -71,6 +77,11 @@ const App: React.FC = () => {
   // 处理星级过滤变化
   const handleStarFilterChange = (stars: number | undefined) => {
     setMinimumLevel(stars);
+  };
+  
+  // 处理数据源变化
+  const handleDataSourceChange = (source: DataSource) => {
+    setPreferredDataSource(source);
   };
   
   // 根据星级过滤事件
@@ -116,7 +127,13 @@ const App: React.FC = () => {
                 <SearchBar onSelect={(symbol: string) => setSelectedStock(symbol)} />
               </Col>
               <Col>
-                <StarRating value={minimumLevel} onChange={handleStarFilterChange} />
+                <Space size="large">
+                  <DataSourceSelector 
+                    currentSource={preferredDataSource} 
+                    onSourceChange={handleDataSourceChange} 
+                  />
+                  <StarRating value={minimumLevel} onChange={handleStarFilterChange} />
+                </Space>
               </Col>
             </Row>
           </Card>
@@ -126,7 +143,11 @@ const App: React.FC = () => {
           
           {loading ? (
             <div className="loading-indicator">
-              <Spin size="large" tip="加载中..." />
+              <Spin>
+                <div style={{ padding: '50px', textAlign: 'center' }}>
+                  <div>加载中...</div>
+                </div>
+              </Spin>
             </div>
           ) : error ? (
             <Alert
