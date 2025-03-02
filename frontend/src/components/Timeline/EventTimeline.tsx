@@ -30,7 +30,7 @@ const EventTimeline: React.FC<EventTimelineProps> = ({ events, onEventSelect, se
     const grouped: { [date: string]: StockEvent[] } = {};
     
     events.forEach(event => {
-      const dateStr = formatDate(event.time);
+      const dateStr = formatDate(event.startTime);
       if (!grouped[dateStr]) {
         grouped[dateStr] = [];
       }
@@ -85,11 +85,24 @@ const EventTimeline: React.FC<EventTimelineProps> = ({ events, onEventSelect, se
                 级别 {event.level}
               </Tag>
               <Text type="secondary" style={{ color: isDarkTheme ? '#aaa' : '' }}>
-                {new Date(event.time * 1000).toLocaleTimeString('zh-CN', {
+                {new Date(event.startTime * 1000).toLocaleTimeString('zh-CN', {
                   hour: '2-digit', 
                   minute: '2-digit'
                 })}
+                {event.endTime && (
+                  <span> - {new Date(event.endTime * 1000).toLocaleTimeString('zh-CN', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}</span>
+                )}
               </Text>
+              {event.durationType && (
+                <Tag color={event.durationType === 'continuous' ? 'purple' : 
+                           event.durationType === 'temporary' ? 'cyan' : 'volcano'}>
+                  {event.durationType === 'continuous' ? '持续性' : 
+                   event.durationType === 'temporary' ? '临时' : '突发'}
+                </Tag>
+              )}
             </Space>
             
             <Text 

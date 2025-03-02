@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import StockChart from './StockChart';
-import { StockPrice, StockEvent } from '../../types';
+import { StockPrice, StockEvent, EventDurationType, EventCategory } from '../../types';
 
 // 模拟数据
 const mockPrices: StockPrice[] = [
@@ -15,10 +15,12 @@ const mockEvents: StockEvent[] = [
     id: '1',
     title: '财报发布',
     description: '公司发布2021财年第一季度财务报告',
-    time: 1612224000,
+    startTime: 1612224000,
+    durationType: 'temporary' as EventDurationType,
     level: 4,
-    source: 'Company News',
-    url: 'https://example.com/news/1'
+    sources: ['Company News'],
+    urls: ['https://example.com/news/1'],
+    category: 'company' as EventCategory
   }
 ];
 

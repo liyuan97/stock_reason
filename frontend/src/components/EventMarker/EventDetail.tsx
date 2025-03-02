@@ -34,22 +34,51 @@ const EventDetail: React.FC<EventDetailProps> = ({ event, onClose }) => {
       <div className="event-detail-content">
         <div className="event-meta">
           <span className={getLevelClassName()}>重要程度: {event.level}</span>
-          <span className="event-date">{formatDate(event.time)}</span>
-          {event.source && <span className="event-source">来源: {event.source}</span>}
+          <span className="event-date">{formatDate(event.startTime)}</span>
+          {event.endTime && (
+            <span className="event-duration">
+              结束时间: {formatDate(event.endTime)}
+            </span>
+          )}
+          {event.sources && event.sources.length > 0 && (
+            <span className="event-source">来源: {event.sources.join(', ')}</span>
+          )}
+          {event.category && (
+            <span className="event-category">分类: {getCategoryName(event.category)}</span>
+          )}
         </div>
         
         <p className="event-description">{event.description}</p>
         
-        {event.url && (
-          <div className="event-link">
-            <a href={event.url} target="_blank" rel="noopener noreferrer">
-              查看详情
-            </a>
+        {event.urls && event.urls.length > 0 && (
+          <div className="event-links">
+            <h4>相关链接:</h4>
+            <ul>
+              {event.urls.map((url, index) => (
+                <li key={index}>
+                  <a href={url} target="_blank" rel="noopener noreferrer">
+                    查看详情 {event.urls && event.urls.length > 1 ? `(${index + 1})` : ''}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </div>
     </div>
   );
+};
+
+// 获取分类的中文名称
+const getCategoryName = (category: string): string => {
+  const categoryMap: Record<string, string> = {
+    'company': '公司自身因素',
+    'industry': '行业因素',
+    'macroeconomic': '宏观经济政策',
+    'market_sentiment': '市场情绪/外部事件'
+  };
+  
+  return categoryMap[category] || category;
 };
 
 export default EventDetail; 

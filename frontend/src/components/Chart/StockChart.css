@@ -1,0 +1,38 @@
+/* 事件区域样式 */
+.event-region-overlay {
+  transition: background-color 0.2s ease;
+}
+
+.event-region-overlay:hover {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+/* 事件工具提示样式 */
+.event-tooltip {
+  animation: fadeIn 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* 点事件特有的工具提示样式 */
+.point-event-tooltip {
+  animation: fadeInPoint 0.15s ease;
+  pointer-events: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px) translateX(-50%); }
+  to { opacity: 1; transform: translateY(0) translateX(-50%); }
+}
+
+@keyframes fadeInPoint {
+  from { opacity: 0; transform: translateY(5px) translateX(-50%); }
+  to { opacity: 1; transform: translateY(0) translateX(-50%); }
+}
+
+/* 事件标记样式 */
+.event-marker {
+  cursor: pointer;
+} 

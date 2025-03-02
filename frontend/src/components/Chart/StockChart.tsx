@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { createChart, IChartApi, ISeriesApi, CandlestickData, DeepPartial, ChartOptions, SeriesMarker, Time, MouseEventParams, ColorType } from 'lightweight-charts';
+import { createChart, IChartApi, ISeriesApi, SeriesMarker, Time, MouseEventParams, ColorType, IPriceLine } from 'lightweight-charts';
 import { StockPrice, StockEvent } from '../../types';
 import useChartResize from '../../hooks/useChartResize';
 import { useTheme } from '../../context/ThemeContext';
-import { Button, Space, Radio } from 'antd';
+import { Button, Space, Radio, Tooltip, Popover } from 'antd';
+import './StockChart.css'; // 为了添加自定义的CSS样式
 
 interface StockChartProps {
   prices: StockPrice[];
@@ -14,14 +15,39 @@ interface StockChartProps {
 // 可选的时间范围
 type TimeRange = '1m' | '3m' | '6m' | '1y' | '3y';
 
+// 添加一个新的接口用于事件覆盖层信息
+interface EventOverlay extends HTMLDivElement {
+  eventInfo?: StockEvent;
+}
+
 const StockChart: React.FC<StockChartProps> = ({ prices, events, onEventClick }) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
-  const [chart, setChart] = useState<IChartApi | null>(null);
-  const [series, setSeries] = useState<ISeriesApi<'Candlestick'> | null>(null);
   const { currentTheme } = useTheme();
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
   const [selectedRange, setSelectedRange] = useState<TimeRange>('3y'); // 默认显示全部3年数据
+  const [eventsState, setEventsState] = useState<StockEvent[]>(events); // 添加事件状态
+  
+  // 保存事件区域的引用以便清理
+  const eventOverlaysRef = useRef<EventOverlay[]>([]);
+  
+  // 添加用于跟踪当前激活的点标记提示
+  const activePointTooltipRef = useRef<HTMLDivElement | null>(null);
+
+  // 当props中的events变化时，更新eventsState
+  useEffect(() => {
+    setEventsState(events);
+  }, [events]);
+
+  // 清理事件区域函数
+  const cleanupEventOverlays = () => {
+    eventOverlaysRef.current.forEach(overlay => {
+      if (chartContainerRef.current?.contains(overlay)) {
+        chartContainerRef.current?.removeChild(overlay);
+      }
+    });
+    eventOverlaysRef.current = [];
+  };
   
   // 创建图表 - 只创建一次，不随主题变化而重建
   useEffect(() => {
@@ -53,8 +79,6 @@ const StockChart: React.FC<StockChartProps> = ({ prices, events, onEventClick })
       // 保存图表和数据系列到refs和状态
       chartRef.current = newChart;
       seriesRef.current = newSeries;
-      setChart(newChart);
-      setSeries(newSeries);
       
       // 处理窗口缩放
       const handleResize = () => {
@@ -230,13 +254,133 @@ const StockChart: React.FC<StockChartProps> = ({ prices, events, onEventClick })
         });
       }
     }
-  }, [prices, currentTheme, selectedRange]);
+  }, [prices, currentTheme, selectedRange, handleRangeChange]);
+  
+  // 处理图表缩放或平移时更新连续事件区域
+  useEffect(() => {
+    if (chartRef.current && seriesRef.current) {
+      const handleScaleChange = () => {
+        // 当图表缩放或平移时，重新计算并更新连续事件区域
+        cleanupEventOverlays();
+        
+        // 重新触发事件效果，通过改变state来触发重新渲染
+        const currentEvents = [...eventsState];
+        setEventsState([]); 
+        setTimeout(() => setEventsState(currentEvents), 50);
+      };
+      
+      chartRef.current.timeScale().subscribeVisibleTimeRangeChange(handleScaleChange);
+      
+      return () => {
+        chartRef.current?.timeScale().unsubscribeVisibleTimeRangeChange(handleScaleChange);
+      };
+    }
+  }, [eventsState]);  // 依赖eventsState而不是events
+  
+  // 处理鼠标十字线移动，用于显示事件点上的提示
+  useEffect(() => {
+    if (chartRef.current && eventsState.length > 0) {
+      // 移除当前活动的提示
+      const removeActiveTooltip = () => {
+        if (activePointTooltipRef.current && chartContainerRef.current?.contains(activePointTooltipRef.current)) {
+          chartContainerRef.current.removeChild(activePointTooltipRef.current);
+          activePointTooltipRef.current = null;
+        }
+      };
+
+      // 鼠标移动处理函数
+      const handleCrosshairMove = (param: MouseEventParams) => {
+        // 移除之前的提示
+        removeActiveTooltip();
+        
+        if (!param.point || !param.time) {
+          return;
+        }
+        
+        // 检查当前时间位置是否有事件点
+        const timeValue = param.time as number;
+        const eventsAtTime = eventsState.filter(event => event.startTime === timeValue);
+        
+        if (eventsAtTime.length > 0) {
+          // 创建提示容器
+          const tooltip = document.createElement('div');
+          tooltip.className = 'event-tooltip point-event-tooltip';
+          
+          // 根据第一个事件获取颜色
+          const event = eventsAtTime[0];
+          let color = '#2196F3'; // 默认蓝色
+          switch(event.level) {
+            case 1: color = '#2196F3'; break; // 蓝色 - 信息
+            case 2: color = '#4CAF50'; break; // 绿色 - 积极
+            case 3: color = '#FFC107'; break; // 黄色 - 警告
+            case 4: color = '#FF9800'; break; // 橙色 - 重要
+            case 5: color = '#F44336'; break; // 红色 - 严重
+          }
+          
+          // 设置定位和样式
+          tooltip.style.position = 'absolute';
+          tooltip.style.left = `${param.point.x}px`;
+          tooltip.style.top = `${param.point.y - 10}px`;
+          tooltip.style.transform = 'translate(-50%, -100%)';
+          tooltip.style.backgroundColor = currentTheme === 'dark' ? '#333' : '#fff';
+          tooltip.style.color = currentTheme === 'dark' ? '#fff' : '#333';
+          tooltip.style.padding = '8px 12px';
+          tooltip.style.borderRadius = '4px';
+          tooltip.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+          tooltip.style.zIndex = '10';
+          tooltip.style.maxWidth = '300px';
+          tooltip.style.whiteSpace = 'nowrap';
+          
+          // 如果有多个事件，显示数量
+          if (eventsAtTime.length > 1) {
+            tooltip.innerHTML = `<div style="font-weight: bold;"><span style="color: ${color};">●</span> ${eventsAtTime.length}个事件 (点击查看详情)</div>`;
+          } else {
+            tooltip.innerHTML = `
+              <div style="font-weight: bold;"><span style="color: ${color};">●</span> ${event.title}</div>
+              <div style="font-size: 12px;">${new Date(event.startTime * 1000).toLocaleDateString()} | 级别: ${event.level}</div>
+            `;
+          }
+          
+          // 添加到容器，保存引用以便后续移除
+          chartContainerRef.current?.appendChild(tooltip);
+          activePointTooltipRef.current = tooltip;
+        }
+      };
+      
+      // 订阅十字线移动事件
+      chartRef.current.subscribeCrosshairMove(handleCrosshairMove);
+      
+      // 鼠标离开图表时移除提示
+      const handleMouseLeave = () => {
+        removeActiveTooltip();
+      };
+      
+      // 为图表容器添加鼠标离开监听器
+      chartContainerRef.current?.addEventListener('mouseleave', handleMouseLeave);
+      
+      return () => {
+        // 清理
+        chartRef.current?.unsubscribeCrosshairMove(handleCrosshairMove);
+        chartContainerRef.current?.removeEventListener('mouseleave', handleMouseLeave);
+        removeActiveTooltip();
+      };
+    }
+  }, [eventsState, currentTheme]);
   
   // 更新事件标记
   useEffect(() => {
-    if (seriesRef.current && events.length > 0) {
+    if (seriesRef.current && eventsState.length > 0) {
+      // 清除之前的标记和区域线
+      seriesRef.current.setMarkers([]);
+      
+      // 清除现有的事件区域
+      cleanupEventOverlays();
+      
+      // 保存已创建的价格线以便之后移除
+      const priceLines: IPriceLine[] = [];
+      
       // 创建标记
-      const markers: SeriesMarker<Time>[] = events.map(event => {
+      const markers: SeriesMarker<Time>[] = eventsState.map(event => {
         // 根据事件级别设置标记颜色
         let color = '#2196F3'; // 默认蓝色
         switch(event.level) {
@@ -257,8 +401,123 @@ const StockChart: React.FC<StockChartProps> = ({ prices, events, onEventClick })
             break;
         }
         
+        // 如果是持续性事件且有结束时间，创建区域标记
+        if (event.durationType === 'continuous' && event.endTime && chartRef.current) {
+          // 延迟创建覆盖层，确保时间坐标系统已准备好
+          setTimeout(() => {
+            if (chartRef.current && chartContainerRef.current) {
+              const timeScale = chartRef.current.timeScale();
+              const startCoord = timeScale.timeToCoordinate(event.startTime as Time);
+              const endCoord = timeScale.timeToCoordinate(event.endTime as Time);
+              
+              if (startCoord !== null && endCoord !== null) {
+                const overlay = document.createElement('div') as EventOverlay;
+                overlay.className = 'event-region-overlay';
+                overlay.style.position = 'absolute';
+                overlay.style.left = `${startCoord}px`;
+                overlay.style.width = `${endCoord - startCoord}px`;
+                overlay.style.top = '0';
+                overlay.style.height = '100%';
+                overlay.style.backgroundColor = `${color}20`; // 20% 透明度
+                overlay.style.pointerEvents = 'auto'; // 允许鼠标事件
+                overlay.style.zIndex = '1';
+                overlay.style.cursor = 'pointer'; // 鼠标变为手型
+                overlay.style.transition = 'background-color 0.2s ease'; // 添加过渡效果
+                overlay.title = `${event.title} (${new Date(event.startTime * 1000).toLocaleDateString()} - ${event.endTime ? new Date(event.endTime * 1000).toLocaleDateString() : '至今'})`;
+                
+                // 存储事件信息到覆盖层元素
+                overlay.eventInfo = event;
+                
+                // 添加鼠标悬停效果
+                overlay.addEventListener('mouseenter', () => {
+                  overlay.style.backgroundColor = `${color}40`; // 悬停时提高透明度为40%
+                  
+                  // 创建一个悬浮提示元素
+                  const tooltip = document.createElement('div');
+                  tooltip.className = 'event-tooltip';
+                  tooltip.style.position = 'absolute';
+                  tooltip.style.left = `${startCoord + (endCoord - startCoord) / 2}px`;
+                  tooltip.style.transform = 'translateX(-50%)';
+                  tooltip.style.bottom = '20px';
+                  tooltip.style.backgroundColor = currentTheme === 'dark' ? '#333' : '#fff';
+                  tooltip.style.color = currentTheme === 'dark' ? '#fff' : '#333';
+                  tooltip.style.padding = '8px 12px';
+                  tooltip.style.borderRadius = '4px';
+                  tooltip.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+                  tooltip.style.zIndex = '10';
+                  tooltip.style.maxWidth = '300px';
+                  tooltip.style.pointerEvents = 'none';
+                  
+                  // 添加内容
+                  tooltip.innerHTML = `
+                    <div style="font-weight: bold; margin-bottom: 4px;">${event.title}</div>
+                    <div style="font-size: 12px; margin-bottom: 4px;">
+                      <span style="color: ${color};">●</span> 
+                      级别: ${event.level} | 
+                      ${new Date(event.startTime * 1000).toLocaleDateString()} - 
+                      ${event.endTime ? new Date(event.endTime * 1000).toLocaleDateString() : '至今'}
+                    </div>
+                    <div style="font-size: 12px;">${event.description.slice(0, 100)}${event.description.length > 100 ? '...' : ''}</div>
+                  `;
+                  
+                  // 添加到容器中
+                  chartContainerRef.current?.appendChild(tooltip);
+                  overlay.dataset.tooltipId = Date.now().toString();
+                  tooltip.id = overlay.dataset.tooltipId;
+                });
+                
+                overlay.addEventListener('mouseleave', () => {
+                  overlay.style.backgroundColor = `${color}20`; // 恢复原来的透明度
+                  
+                  // 移除提示元素
+                  if (overlay.dataset.tooltipId) {
+                    const tooltip = document.getElementById(overlay.dataset.tooltipId);
+                    if (tooltip && chartContainerRef.current?.contains(tooltip)) {
+                      chartContainerRef.current?.removeChild(tooltip);
+                    }
+                    delete overlay.dataset.tooltipId;
+                  }
+                });
+                
+                // 添加点击事件处理
+                overlay.addEventListener('click', () => {
+                  if (onEventClick && overlay.eventInfo) {
+                    onEventClick(overlay.eventInfo);
+                  }
+                });
+                
+                chartContainerRef.current.appendChild(overlay);
+                eventOverlaysRef.current.push(overlay);
+                
+                // 为区域的开始和结束创建价格线
+                const startPriceLine = seriesRef.current?.createPriceLine({
+                  price: 0,
+                  color: color,
+                  lineWidth: 2,
+                  lineStyle: 2, // 虚线
+                  axisLabelVisible: false,
+                  title: event.title,
+                });
+                
+                const endPriceLine = seriesRef.current?.createPriceLine({
+                  price: 0,
+                  color: color,
+                  lineWidth: 2,
+                  lineStyle: 2, // 虚线
+                  axisLabelVisible: false,
+                  title: '',
+                });
+                
+                if (startPriceLine && endPriceLine) {
+                  priceLines.push(startPriceLine, endPriceLine);
+                }
+              }
+            }
+          }, 200); // 给图表一些时间来计算坐标
+        }
+        
         return {
-          time: event.time as Time,
+          time: event.startTime as Time, // 使用 startTime 而不是 time
           position: 'aboveBar',
           color,
           shape: 'circle',
@@ -269,18 +528,42 @@ const StockChart: React.FC<StockChartProps> = ({ prices, events, onEventClick })
       
       // 设置标记
       seriesRef.current.setMarkers(markers);
+      
+      // 返回清理函数
+      return () => {
+        // 清除所有价格线
+        if (seriesRef.current) {
+          priceLines.forEach(line => {
+            seriesRef.current?.removePriceLine(line);
+          });
+        }
+        // 清除所有事件区域
+        cleanupEventOverlays();
+      };
     } else if (seriesRef.current) {
       // 清除标记
       seriesRef.current.setMarkers([]);
+      // 清除所有事件区域
+      cleanupEventOverlays();
     }
-  }, [events]);
+  }, [eventsState, currentTheme, onEventClick]);
+  
+  // 清理函数 - 组件卸载时
+  useEffect(() => {
+    const chartContainer = chartContainerRef.current;
+    return () => {
+      if (chartContainer) {
+        cleanupEventOverlays();
+      }
+    };
+  }, []);
   
   // 单独处理事件点击
   useEffect(() => {
-    if (chartRef.current && onEventClick && seriesRef.current && events.length > 0) {
+    if (chartRef.current && onEventClick && seriesRef.current && eventsState.length > 0) {
       // 对标记进行处理以便点击识别
-      const markers = events.map(event => ({
-        time: event.time as Time,
+      const markers = eventsState.map(event => ({
+        time: event.startTime as Time, // 使用 startTime 而不是 time
         event,
       }));
       
@@ -311,7 +594,7 @@ const StockChart: React.FC<StockChartProps> = ({ prices, events, onEventClick })
         }
       };
     }
-  }, [onEventClick, events]);
+  }, [onEventClick, eventsState]);
   
   return (
     <div className="stock-chart-container">

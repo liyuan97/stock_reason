@@ -1,4 +1,4 @@
-import { StockData, StockPrice, StockEvent } from '../types';
+import { StockData, StockPrice, StockEvent, EventDurationType, EventCategory } from '../types';
 import Papa, { ParseResult } from 'papaparse';
 
 // Generate mock stock price data
@@ -65,23 +65,64 @@ export const generateMockEvents = (symbol: string, prices: StockPrice[]): StockE
     '股票分割', '派息公告', '战略合作', '监管调查'
   ];
   
+  // Event duration types
+  const durationTypes: EventDurationType[] = ['continuous', 'temporary', 'sudden'];
+  
+  // Event categories
+  const categories: EventCategory[] = ['company', 'industry', 'macroeconomic', 'market_sentiment'];
+  
   // Generate events at the selected indices
   selectedIndices.forEach(index => {
     const price = prices[index];
     const eventType = eventTypes[Math.floor(Math.random() * eventTypes.length)];
-    const level = Math.floor(Math.random() * 3) + 1 as 1 | 2 | 3;
+    const level = Math.floor(Math.random() * 3) + 1 as 1 | 2 | 3 | 4 | 5;
+    const durationType = durationTypes[Math.floor(Math.random() * durationTypes.length)];
+    
+    // For continuous events, sometimes add an end time
+    let endTime: number | undefined = undefined;
+    if (durationType === 'continuous' && Math.random() > 0.3) {
+      // Find a later price point for the end time (1-30 days later)
+      const daysLater = Math.floor(Math.random() * 30) + 1;
+      const endIndex = Math.min(index + daysLater, prices.length - 1);
+      endTime = prices[endIndex].time;
+    }
     
     events.push({
       id: `${symbol}-event-${index}`,
-      time: price.time,
+      startTime: price.time,
+      endTime,
       title: eventType,
       description: `${getStockName(symbol)}${eventType}事件`,
       level,
-      impact: Math.random() > 0.5 ? 'positive' : 'negative'
+      durationType,
+      category: categories[Math.floor(Math.random() * categories.length)],
+      impact: Math.random() > 0.5 ? 'positive' : 'negative',
+      sources: Math.random() > 0.7 ? [getRandomSource()] : [],
+      urls: Math.random() > 0.7 ? [getRandomUrl()] : []
     });
   });
   
   return events;
+};
+
+// Helper function to get a random news source
+const getRandomSource = (): string => {
+  const sources = [
+    '公司公告', '财经媒体', '监管机构', '分析师报告', 
+    '行业新闻', '社交媒体', '投资者关系'
+  ];
+  return sources[Math.floor(Math.random() * sources.length)];
+};
+
+// Helper function to get a random URL
+const getRandomUrl = (): string => {
+  const domains = [
+    'finance.example.com', 'news.example.com', 'investor.example.com',
+    'market.example.com', 'stocks.example.com'
+  ];
+  const domain = domains[Math.floor(Math.random() * domains.length)];
+  const id = Math.floor(Math.random() * 1000);
+  return `https://${domain}/article/${id}`;
 };
 
 // Helper function to get base price for a stock
