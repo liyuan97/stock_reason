@@ -1,0 +1,44 @@
+[
+  {
+    "id": 2001,
+    "title": "宏观经济政策调整",
+    "description": "央行宣布降息，可能对科技行业带来利好。",
+    "start_time": 1677264000,
+    "end_time": null,
+    "level": 3,
+    "stock_symbol": "MSFT",
+    "sources": [
+      "央行公告",
+      "财经分析"
+    ],
+    "urls": [
+      "https://example.com/economy/1"
+    ],
+    "duration_type": "sudden",
+    "category": "macroeconomic",
+    "impact": "positive",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  },
+  {
+    "id": 2002,
+    "title": "市场情绪波动",
+    "description": "受国际形势影响，市场情绪出现波动，投资者谨慎观望。",
+    "start_time": 1677868800,
+    "end_time": null,
+    "level": 2,
+    "stock_symbol": "MSFT",
+    "sources": [
+      "市场分析",
+      "投资者情绪调查"
+    ],
+    "urls": [
+      "https://example.com/market/1"
+    ],
+    "duration_type": "temporary",
+    "category": "market_sentiment",
+    "impact": "neutral",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  }
+]

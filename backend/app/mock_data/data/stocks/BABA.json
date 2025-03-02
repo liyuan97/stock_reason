@@ -1,0 +1,23 @@
+[
+  {
+    "id": 5001,
+    "title": "国内监管环境变化",
+    "description": "中国监管机构放宽对互联网平台的监管政策，市场预期改善。",
+    "start_time": 1677177600,
+    "end_time": null,
+    "level": 4,
+    "stock_symbol": "BABA",
+    "sources": [
+      "监管机构公告",
+      "政策分析"
+    ],
+    "urls": [
+      "https://example.com/alibaba/regulation"
+    ],
+    "duration_type": "continuous",
+    "category": "industry",
+    "impact": "positive",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  }
+]

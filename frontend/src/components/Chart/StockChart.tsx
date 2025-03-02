@@ -379,8 +379,11 @@ const StockChart: React.FC<StockChartProps> = ({ prices, events, onEventClick })
       // 保存已创建的价格线以便之后移除
       const priceLines: IPriceLine[] = [];
       
+      // 对事件按照startTime进行升序排序，确保时间顺序正确
+      const sortedEvents = [...eventsState].sort((a, b) => a.startTime - b.startTime);
+      
       // 创建标记
-      const markers: SeriesMarker<Time>[] = eventsState.map(event => {
+      const markers: SeriesMarker<Time>[] = sortedEvents.map(event => {
         // 根据事件级别设置标记颜色
         let color = '#2196F3'; // 默认蓝色
         switch(event.level) {

@@ -1,4 +1,4 @@
-import { StockData, StockPrice, StockEvent, EventDurationType, EventCategory } from '../types';
+import { StockData, StockPrice, StockEvent, EventDurationType, EventCategory, EventLevel } from '../types';
 import Papa, { ParseResult } from 'papaparse';
 
 // Generate mock stock price data
@@ -42,7 +42,56 @@ const generateMockPrices = (symbol: string, days: number = 365 * 3): StockPrice[
   return prices;
 };
 
-// Generate mock events
+// Fetch real events from the backend API
+export const fetchEventsFromAPI = async (symbol: string): Promise<StockEvent[]> => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/events/stock/${symbol}?skip=0&limit=100`);
+    
+    if (!response.ok) {
+      console.error(`Error fetching events: ${response.statusText}`);
+      return [];
+    }
+
+    const data = await response.json();
+    
+    // For debugging - log the time order of raw events from API
+    if (data.length > 1) {
+      console.log('API returned events time order (first 3):', 
+        data.slice(0, 3).map((e: any) => e.start_time));
+    }
+    
+    // Transform the API response to match the StockEvent interface
+    const events = data.map((event: any) => ({
+      id: event.id.toString(),
+      title: event.title,
+      description: event.description,
+      startTime: event.start_time,
+      endTime: event.end_time || undefined,
+      durationType: event.duration_type as EventDurationType,
+      level: event.level as EventLevel,
+      sources: event.sources || [],
+      urls: event.urls || [],
+      impact: event.impact as 'positive' | 'negative' | 'neutral' | undefined,
+      category: event.category as EventCategory
+    }));
+    
+    // Sort events by startTime in ascending order
+    const sortedEvents = events.sort((a: StockEvent, b: StockEvent) => a.startTime - b.startTime);
+    
+    // For debugging - log the time order after sorting
+    if (sortedEvents.length > 1) {
+      console.log('After sorting events time order (first 3):', 
+        sortedEvents.slice(0, 3).map((e: StockEvent) => e.startTime));
+    }
+    
+    return sortedEvents;
+  } catch (error) {
+    console.error('Failed to fetch events from API:', error);
+    return [];
+  }
+};
+
+// Fallback to mock events if API fetch fails
 export const generateMockEvents = (symbol: string, prices: StockPrice[]): StockEvent[] => {
   const events: StockEvent[] = [];
   
@@ -102,7 +151,8 @@ export const generateMockEvents = (symbol: string, prices: StockPrice[]): StockE
     });
   });
   
-  return events;
+  // Sort events by startTime to ensure proper ordering
+  return events.sort((a: StockEvent, b: StockEvent) => a.startTime - b.startTime);
 };
 
 // Helper function to get a random news source

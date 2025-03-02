@@ -1,0 +1,255 @@
+[
+  {
+    "id": 1001,
+    "title": "Q2财报发布",
+    "description": "公司发布第二季度财报，净利润同比增长20%，超出市场预期。",
+    "start_time": 1677523200,
+    "end_time": null,
+    "level": 4,
+    "stock_symbol": "AAPL",
+    "sources": [
+      "公司官网",
+      "财经新闻"
+    ],
+    "urls": [
+      "https://example.com/news/1",
+      "https://example.com/news/2"
+    ],
+    "duration_type": "temporary",
+    "category": "company",
+    "impact": "positive",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  },
+  {
+    "id": 1002,
+    "title": "新产品发布会",
+    "description": "公司宣布将在下个月举行新产品发布会，预计将发布新款iPhone和MacBook产品线。",
+    "start_time": 1677782400,
+    "end_time": 1679424000,
+    "level": 3,
+    "stock_symbol": "AAPL",
+    "sources": [
+      "公司官方微博",
+      "科技博客"
+    ],
+    "urls": [
+      "https://example.com/tech/1"
+    ],
+    "duration_type": "continuous",
+    "category": "company",
+    "impact": "positive",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  },
+  {
+    "id": 1003,
+    "title": "行业竞争加剧",
+    "description": "主要竞争对手推出同类产品，可能导致市场份额下降。",
+    "start_time": 1677609600,
+    "end_time": null,
+    "level": 2,
+    "stock_symbol": "AAPL",
+    "sources": [
+      "行业分析报告",
+      "竞争对手公告"
+    ],
+    "urls": [
+      "https://example.com/industry/1"
+    ],
+    "duration_type": "continuous",
+    "category": "industry",
+    "impact": "negative",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  },
+  {
+    "id": 2001,
+    "title": "宏观经济政策调整",
+    "description": "央行宣布降息，可能对科技行业带来利好。",
+    "start_time": 1677264000,
+    "end_time": null,
+    "level": 3,
+    "stock_symbol": "MSFT",
+    "sources": [
+      "央行公告",
+      "财经分析"
+    ],
+    "urls": [
+      "https://example.com/economy/1"
+    ],
+    "duration_type": "sudden",
+    "category": "macroeconomic",
+    "impact": "positive",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  },
+  {
+    "id": 2002,
+    "title": "市场情绪波动",
+    "description": "受国际形势影响，市场情绪出现波动，投资者谨慎观望。",
+    "start_time": 1677868800,
+    "end_time": null,
+    "level": 2,
+    "stock_symbol": "MSFT",
+    "sources": [
+      "市场分析",
+      "投资者情绪调查"
+    ],
+    "urls": [
+      "https://example.com/market/1"
+    ],
+    "duration_type": "temporary",
+    "category": "market_sentiment",
+    "impact": "neutral",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  },
+  {
+    "id": 3001,
+    "title": "新工厂投产",
+    "description": "公司柏林超级工厂正式投产，欧洲产能显著提升。",
+    "start_time": 1677350400,
+    "end_time": null,
+    "level": 3,
+    "stock_symbol": "TSLA",
+    "sources": [
+      "公司公告",
+      "产业分析"
+    ],
+    "urls": [
+      "https://example.com/tesla/factory"
+    ],
+    "duration_type": "continuous",
+    "category": "company",
+    "impact": "positive",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  },
+  {
+    "id": 3002,
+    "title": "新能源汽车补贴政策调整",
+    "description": "多国政府调整新能源汽车补贴政策，影响销售预期。",
+    "start_time": 1677782400,
+    "end_time": null,
+    "level": 4,
+    "stock_symbol": "TSLA",
+    "sources": [
+      "政策公告",
+      "行业研究"
+    ],
+    "urls": [
+      "https://example.com/tesla/policy"
+    ],
+    "duration_type": "continuous",
+    "category": "macroeconomic",
+    "impact": "negative",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  },
+  {
+    "id": 3003,
+    "title": "车辆降价促销",
+    "description": "公司在全球范围内下调车型价格，以提升销量。",
+    "start_time": 1677436800,
+    "end_time": 1679856000,
+    "level": 3,
+    "stock_symbol": "TSLA",
+    "sources": [
+      "销售公告",
+      "市场分析"
+    ],
+    "urls": [
+      "https://example.com/tesla/pricing"
+    ],
+    "duration_type": "temporary",
+    "category": "company",
+    "impact": "positive",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  },
+  {
+    "id": 3004,
+    "title": "自动驾驶技术进展",
+    "description": "公司发布自动驾驶系统更新，功能显著提升。",
+    "start_time": 1677609600,
+    "end_time": null,
+    "level": 2,
+    "stock_symbol": "TSLA",
+    "sources": [
+      "技术发布会",
+      "用户反馈"
+    ],
+    "urls": [
+      "https://example.com/tesla/fsd"
+    ],
+    "duration_type": "continuous",
+    "category": "company",
+    "impact": "positive",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  },
+  {
+    "id": 3005,
+    "title": "CEO社交媒体争议",
+    "description": "公司CEO在社交媒体发表争议言论，引发投资者担忧。",
+    "start_time": 1677955200,
+    "end_time": 1678300800,
+    "level": 2,
+    "stock_symbol": "TSLA",
+    "sources": [
+      "社交媒体",
+      "投资者反应"
+    ],
+    "urls": [
+      "https://example.com/tesla/ceo"
+    ],
+    "duration_type": "temporary",
+    "category": "market_sentiment",
+    "impact": "negative",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  },
+  {
+    "id": 4001,
+    "title": "电商平台季度销售增长",
+    "description": "公司电商平台季度销售额同比增长15%，超出市场预期。",
+    "start_time": 1677350400,
+    "end_time": null,
+    "level": 3,
+    "stock_symbol": "AMZN",
+    "sources": [
+      "公司财报",
+      "市场分析"
+    ],
+    "urls": [
+      "https://example.com/amazon/earnings"
+    ],
+    "duration_type": "temporary",
+    "category": "company",
+    "impact": "positive",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  },
+  {
+    "id": 5001,
+    "title": "国内监管环境变化",
+    "description": "中国监管机构放宽对互联网平台的监管政策，市场预期改善。",
+    "start_time": 1677177600,
+    "end_time": null,
+    "level": 4,
+    "stock_symbol": "BABA",
+    "sources": [
+      "监管机构公告",
+      "政策分析"
+    ],
+    "urls": [
+      "https://example.com/alibaba/regulation"
+    ],
+    "duration_type": "continuous",
+    "category": "industry",
+    "impact": "positive",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  }
+]

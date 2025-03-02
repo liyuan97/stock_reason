@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { StockData, StockPrice, StockEvent, EventLevel } from '../types';
 // import { getMockStockData } from '../utils/mockData';
-import { generateMockEvents } from '../utils/mockData';
+import { generateMockEvents, fetchEventsFromAPI } from '../utils/mockData';
 
 // 定义数据来源类型
 export type DataSource = 'yahoo' | 'mock';
@@ -92,8 +92,17 @@ export const getStockData = async (symbol: string, preferredSource?: DataSource)
   try {
     if (dataSource === 'yahoo') {
       prices = await getStockPricesFromYahoo(symbol);
-      // Generate events based on the price data
-      events = generateMockEvents(symbol, prices);
+      
+      // Try to fetch real events from the backend API
+      try {
+        events = await fetchEventsFromAPI(symbol);
+        console.log(`[API] Successfully fetched ${events.length} events from backend API for ${symbol}`);
+      } catch (eventError) {
+        console.error('[API] Error fetching events from backend:', eventError);
+        // Fallback to mock events if the API request fails
+        events = generateMockEvents(symbol, prices);
+        console.log('[API] Using mock events as fallback');
+      }
     } else if (dataSource === 'mock') {
       // 使用模拟数据
       prices = generateMockPrices(symbol);

@@ -1,0 +1,23 @@
+[
+  {
+    "id": 4001,
+    "title": "电商平台季度销售增长",
+    "description": "公司电商平台季度销售额同比增长15%，超出市场预期。",
+    "start_time": 1677350400,
+    "end_time": null,
+    "level": 3,
+    "stock_symbol": "AMZN",
+    "sources": [
+      "公司财报",
+      "市场分析"
+    ],
+    "urls": [
+      "https://example.com/amazon/earnings"
+    ],
+    "duration_type": "temporary",
+    "category": "company",
+    "impact": "positive",
+    "created_at": "2023-03-02T08:16:00.000000",
+    "updated_at": "2023-03-02T08:16:00.000000"
+  }
+]
