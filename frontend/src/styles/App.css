@@ -264,29 +264,27 @@
   z-index: 1000;
 }
 
-/* 应用主样式 */
+/* Application main styles */
 .ant-layout {
-  min-height: 100vh;
+  min-height: 100vh !important;
 }
 
-/* 头部样式 */
+/* Header styles */
 .ant-layout-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
+  background-color: #fff !important;
+  padding: 0 24px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* 内容区域样式 */
+/* Content area styles */
 .ant-layout-content {
   padding: 24px;
-  margin: 16px;
+  background-color: #f5f7fa;
 }
 
-/* 事件过滤按钮样式 */
+/* Event filter button styles */
 .level-1 {
-  color: var(--info-color);
-  border-color: var(--info-color);
+  color: #2196F3 !important;
 }
 
 .level-2 {

@@ -20,7 +20,7 @@ const { Title, Text } = Typography;
 const App: React.FC = () => {
   const { currentTheme } = useTheme();
   
-  // 状态管理
+  // State management
   const [stockData, setStockData] = useState<StockData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,32 +28,32 @@ const App: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<StockEvent | null>(null);
   const [showEventDetail, setShowEventDetail] = useState<boolean>(false);
   const [minimumLevel, setMinimumLevel] = useState<number | undefined>(undefined);
-  const [dataSource, setDataSource] = useState<DataSource>('yahoo'); // 默认使用Alpha Vantage
-  const [preferredDataSource, setPreferredDataSource] = useState<DataSource>('yahoo'); // 用户首选数据源
+  const [dataSource, setDataSource] = useState<DataSource>('yahoo'); // Default using Alpha Vantage
+  const [preferredDataSource, setPreferredDataSource] = useState<DataSource>('yahoo'); // User preferred data source
   
-  // 获取股票数据
+  // Get stock data
   useEffect(() => {
     const fetchStockData = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        console.log(`[App] 使用首选数据源 ${preferredDataSource} 获取数据`);
+        console.log(`[App] Using preferred data source ${preferredDataSource} to fetch data`);
         
-        // 使用用户选择的首选数据源
+        // Use the user's preferred data source
         const data = await getStockData(selectedStock, preferredDataSource);
         
-        // 检查返回的数据是否完整
+        // Check if the returned data is complete
         if (data.prices.length > 0) {
           const firstDate = new Date(data.prices[0].time * 1000);
           const lastDate = new Date(data.prices[data.prices.length - 1].time * 1000);
-          console.log(`[App] 获取到${data.prices.length}个数据点，从${firstDate.toLocaleDateString()}到${lastDate.toLocaleDateString()}`);
+          console.log(`[App] Retrieved ${data.prices.length} data points, from ${firstDate.toLocaleDateString()} to ${lastDate.toLocaleDateString()}`);
         }
         
         setStockData(data);
-        setDataSource(lastDataSource); // 更新实际使用的数据源
+        setDataSource(lastDataSource); // Update the actually used data source
       } catch (err) {
-        setError('获取股票数据失败，请稍后重试');
+        setError('Failed to retrieve stock data, please try again later');
         console.error(err);
       } finally {
         setLoading(false);
@@ -63,41 +63,41 @@ const App: React.FC = () => {
     fetchStockData();
   }, [selectedStock, preferredDataSource]);
   
-  // 处理事件点击
+  // Handle event click
   const handleEventClick = (event: StockEvent) => {
     setSelectedEvent(event);
     setShowEventDetail(true);
   };
   
-  // 关闭事件详情
+  // Close event detail
   const handleCloseEventDetail = () => {
     setShowEventDetail(false);
   };
   
-  // 处理星级过滤变化
+  // Handle star filter change
   const handleStarFilterChange = (stars: number | undefined) => {
     setMinimumLevel(stars);
   };
   
-  // 处理数据源变化
+  // Handle data source change
   const handleDataSourceChange = (source: DataSource) => {
     setPreferredDataSource(source);
   };
   
-  // 根据星级过滤事件
+  // Filter events by star rating
   const getFilteredEvents = () => {
     if (!stockData) return [];
     if (minimumLevel === undefined) return stockData.events;
     
-    // 直接使用星级作为最低事件级别
-    // 星级1 = 显示所有级别为1及以上的事件
-    // 星级4 = 只显示级别为4和5的事件
+    // Directly use star rating as minimum event level
+    // Star rating 1 = Show all events level 1 and above
+    // Star rating 4 = Only show level 4 and 5 events
     return stockData.events.filter(event => {
-      return event.level >= minimumLevel;  // 直接过滤
+      return event.level >= minimumLevel;  // Direct filtering
     });
   };
   
-  // 获取过滤后的数据
+  // Get filtered data
   const filteredEvents = stockData ? getFilteredEvents() : [];
   
   return (
@@ -109,7 +109,7 @@ const App: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'space-between'
       }}>
-        <Title level={3} style={{ color: '#fff', margin: 0 }}>股票事件追踪系统</Title>
+        <Title level={3} style={{ color: '#fff', margin: 0 }}>Stock Event Tracker</Title>
         <ThemeSwitch />
       </Header>
       
@@ -138,20 +138,20 @@ const App: React.FC = () => {
             </Row>
           </Card>
           
-          {/* 显示数据来源信息 */}
+          {/* Display data source information */}
           <DataSourceInfo dataSource={dataSource} />
           
           {loading ? (
             <div className="loading-indicator">
               <Spin>
                 <div style={{ padding: '50px', textAlign: 'center' }}>
-                  <div>加载中...</div>
+                  <div>Loading...</div>
                 </div>
               </Spin>
             </div>
           ) : error ? (
             <Alert
-              message="错误"
+              message="Error"
               description={error}
               type="error"
               showIcon
@@ -170,7 +170,7 @@ const App: React.FC = () => {
                     <Title level={4} style={{ margin: 0 }}>{stockData.name} ({stockData.symbol})</Title>
                     {stockData.prices.length > 0 && (
                       <Text>
-                        最新价格：{stockData.prices[stockData.prices.length - 1].close}
+                        Latest price: {stockData.prices[stockData.prices.length - 1].close}
                       </Text>
                     )}
                   </Col>
@@ -178,7 +178,7 @@ const App: React.FC = () => {
               </Card>
               
               <Card 
-                title="股票走势图" 
+                title="Stock Price Chart" 
                 style={{ 
                   marginBottom: '24px',
                   background: currentTheme === 'dark' ? '#1e1e1e' : '#fff',
@@ -193,7 +193,7 @@ const App: React.FC = () => {
               </Card>
               
               <Card 
-                title="事件时间线" 
+                title="Event Timeline" 
                 style={{ 
                   background: currentTheme === 'dark' ? '#1e1e1e' : '#fff',
                   boxShadow: currentTheme === 'dark' ? '0 2px 8px rgba(0, 0, 0, 0.5)' : '0 2px 8px rgba(0, 0, 0, 0.1)'

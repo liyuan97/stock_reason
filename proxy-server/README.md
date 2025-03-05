@@ -1,103 +1,92 @@
-# Yahoo Finance API 代理服务器
+# Yahoo Finance API Proxy Server
 
-这是一个简单的Node.js代理服务器，用于解决前端应用访问Yahoo Finance API时的CORS（跨域资源共享）问题。
+This is a simple Node.js proxy server designed to solve CORS (Cross-Origin Resource Sharing) issues when accessing the Yahoo Finance API from frontend applications.
 
-## 功能
+## Features
 
-- 代理Yahoo Finance图表API请求
-- 代理Yahoo Finance搜索API请求
-- 处理错误并提供详细的错误信息
-- 支持自定义请求参数
+- Proxy Yahoo Finance chart API requests
+- Proxy Yahoo Finance search API requests
+- Handle errors and provide detailed error information
+- Support custom request parameters
 
-## 安装
+## Installation
 
 ```bash
-# 安装依赖
+# Install dependencies
 npm install
 
-# 安装开发依赖（可选）
+# Install development dependencies (optional)
 npm install --save-dev nodemon
 ```
 
-## 使用方法
-
-### 启动服务器
+## Usage
 
 ```bash
-# 生产模式
+# Start the proxy server
 npm start
 
-# 开发模式（代码更改时自动重启）
+# Development mode (auto-restarts on code changes)
 npm run dev
 ```
 
-服务器默认运行在 http://localhost:3001
+The server will start on port 3001 by default (configurable in .env file).
 
-### API端点
+## API Endpoints
 
-#### 1. 获取股票图表数据
-
-```
-GET /api/yahoo/chart/:symbol
-```
-
-参数:
-- `symbol`: 股票代码（如AAPL, MSFT, 0700.HK等）
-- `period1`: 开始时间（Unix时间戳，秒）
-- `period2`: 结束时间（Unix时间戳，秒）
-- `interval`: 数据间隔（默认: '1d'，可选: '1d', '1wk', '1mo'等）
-- `includePrePost`: 是否包含盘前盘后数据（默认: 'false'）
-- `events`: 包含的事件（默认: 'div,split'）
-
-示例:
-```
-http://localhost:3001/api/yahoo/chart/AAPL
-http://localhost:3001/api/yahoo/chart/MSFT?interval=1wk
-```
-
-#### 2. 搜索股票
+### 1. Stock Chart Data
 
 ```
-GET /api/yahoo/search
+GET /api/chart/:symbol
 ```
 
-参数:
-- `q`: 搜索查询（必需）
-- `quotesCount`: 返回结果数量（默认: 10）
-- `lang`: 语言（默认: 'zh-CN'）
+Parameters:
+- `symbol`: Stock symbol (e.g., AAPL, MSFT, GOOGL)
+- `interval`: Data interval (e.g., 1d, 1wk, 1mo) - optional
+- `range`: Data range (e.g., 1mo, 3mo, 6mo, 1y, 5y, max) - optional
 
-示例:
+Example:
 ```
-http://localhost:3001/api/yahoo/search?q=apple
-http://localhost:3001/api/yahoo/search?q=微软&quotesCount=5
+http://localhost:3001/api/chart/AAPL?interval=1d&range=1y
 ```
 
-#### 3. 健康检查
+### 2. Stock Search
+
+```
+GET /api/search
+```
+
+Parameters:
+- `query`: Search term
+
+Example:
+```
+http://localhost:3001/api/search?query=apple
+```
+
+### 3. Health Check
 
 ```
 GET /health
 ```
 
-返回服务器状态和当前时间戳。
+Returns server status and current timestamp.
 
-## 在前端应用中使用
+## Error Handling
 
-```javascript
-// 获取股票数据
-fetch('http://localhost:3001/api/yahoo/chart/AAPL')
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
+The server handles and returns appropriate error messages for:
+- Invalid requests
+- Yahoo Finance API errors
+- Network issues
 
-// 搜索股票
-fetch('http://localhost:3001/api/yahoo/search?q=apple')
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
+## Configuration
+
+Create a `.env` file in the root directory with the following variables:
+
+```
+PORT=3001
+YAHOO_FINANCE_BASE_URL=https://query1.finance.yahoo.com
 ```
 
-## 注意事项
+## License
 
-- 此代理服务器仅用于开发和测试目的
-- 在生产环境中使用时，请确保添加适当的安全措施
-- Yahoo Finance API可能有使用限制，请遵守其服务条款 
+MIT 

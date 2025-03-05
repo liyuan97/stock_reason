@@ -16,8 +16,8 @@ export interface StockChartProps {
 }
 
 export interface ChartContextType {
-  chartRef: React.RefObject<IChartApi | null>;
-  seriesRef: React.RefObject<ISeriesApi<'Candlestick'> | null>;
+  chartRef: React.MutableRefObject<IChartApi | null>;
+  seriesRef: React.MutableRefObject<ISeriesApi<'Candlestick'> | null>;
   chartContainerRef: React.RefObject<HTMLDivElement | null>;
   setChartContainerRef: (ref: React.RefObject<HTMLDivElement>) => void;
   events: StockEvent[];

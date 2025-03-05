@@ -18,11 +18,11 @@ const RangeSelector: React.FC = () => {
         buttonStyle="solid"
         style={{ marginBottom: '10px' }}
       >
-        <Radio.Button value="1m">1个月</Radio.Button>
-        <Radio.Button value="3m">3个月</Radio.Button>
-        <Radio.Button value="6m">6个月</Radio.Button>
-        <Radio.Button value="1y">1年</Radio.Button>
-        <Radio.Button value="3y">3年</Radio.Button>
+        <Radio.Button value="1m">1 Month</Radio.Button>
+        <Radio.Button value="3m">3 Months</Radio.Button>
+        <Radio.Button value="6m">6 Months</Radio.Button>
+        <Radio.Button value="1y">1 Year</Radio.Button>
+        <Radio.Button value="3y">3 Years</Radio.Button>
       </Radio.Group>
     </div>
   );

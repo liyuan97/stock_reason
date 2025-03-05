@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "stock-reason-backend"
 version = "0.1.0"
-description = "股票事件追踪系统后端"
+description = "Stock Event Tracker Backend"
 requires-python = ">=3.10,<=3.12"
 dependencies = [
     "fastapi==0.103.1",

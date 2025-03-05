@@ -80,7 +80,7 @@
   background-color: #1565c0;
 }
 
-/* 动画效果 */
+/* Animation effects */
 @keyframes fadeIn {
   from {
     opacity: 0;

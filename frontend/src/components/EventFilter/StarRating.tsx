@@ -15,9 +15,9 @@ const StarRating: React.FC<StarRatingProps> = ({ value, onChange }) => {
   const isDarkTheme = currentTheme === 'dark';
   const [hoverValue, setHoverValue] = useState<number>(0);
   
-  // 处理星级选择
+  // Handle star rating selection
   const handleChange = (newValue: number) => {
-    // 如果点击当前选中的星级，则清除选择（全部事件）
+    // If clicking the currently selected star level, clear the selection (all events)
     if (newValue === value) {
       onChange(undefined);
     } else {
@@ -25,15 +25,15 @@ const StarRating: React.FC<StarRatingProps> = ({ value, onChange }) => {
     }
   };
   
-  // 获取提示文本
+  // Get tooltip text
   const getTooltipText = (stars: number) => {
     switch(stars) {
-      case 1: return '显示1星及以上事件';
-      case 2: return '显示2星及以上事件';
-      case 3: return '显示3星及以上事件';
-      case 4: return '显示4星及以上事件';
-      case 5: return '仅显示5星事件';
-      default: return '移动鼠标选择星级';
+      case 1: return 'Show events with 1 star or above';
+      case 2: return 'Show events with 2 stars or above';
+      case 3: return 'Show events with 3 stars or above';
+      case 4: return 'Show events with 4 stars or above';
+      case 5: return 'Show only 5 star events';
+      default: return 'Move mouse to select star level';
     }
   };
   
@@ -42,7 +42,7 @@ const StarRating: React.FC<StarRatingProps> = ({ value, onChange }) => {
   return (
     <div className="star-rating-container">
       <Text strong style={{ marginRight: '12px', color: isDarkTheme ? '#e0e0e0' : '#333' }}>
-        事件重要性：
+        Event Importance:
       </Text>
       <Tooltip title={tooltipText} placement="bottom">
         <div>
@@ -59,7 +59,7 @@ const StarRating: React.FC<StarRatingProps> = ({ value, onChange }) => {
         </div>
       </Tooltip>
       <Text type="secondary" style={{ marginLeft: '12px', color: isDarkTheme ? '#aaa' : '' }}>
-        {value ? `${value}星及以上` : '全部事件'}
+        {value ? `${value} stars or above` : 'All events'}
       </Text>
     </div>
   );

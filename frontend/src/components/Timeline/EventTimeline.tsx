@@ -15,17 +15,17 @@ const EventTimeline: React.FC<EventTimelineProps> = ({ events, onEventSelect, se
   const { currentTheme } = useTheme();
   const isDarkTheme = currentTheme === 'dark';
   
-  // 格式化时间戳为可读的日期
+  // Format timestamp to readable date
   const formatDate = (timestamp: number): string => {
-    const date = new Date(timestamp * 1000); // 转换为毫秒
-    return date.toLocaleDateString('zh-CN', {
+    const date = new Date(timestamp * 1000); // Convert to milliseconds
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
     });
   };
   
-  // 按日期分组事件
+  // Group events by date
   const groupEventsByDate = (): { [date: string]: StockEvent[] } => {
     const grouped: { [date: string]: StockEvent[] } = {};
     
@@ -42,13 +42,13 @@ const EventTimeline: React.FC<EventTimelineProps> = ({ events, onEventSelect, se
   
   const groupedEvents = groupEventsByDate();
   const dates = Object.keys(groupedEvents).sort((a, b) => {
-    // 按日期倒序排列（最新日期在前）
+    // Sort by date in descending order (newest date first)
     const timeA = new Date(a).getTime();
     const timeB = new Date(b).getTime();
     return timeB - timeA;
   });
   
-  // 获取事件级别对应的颜色
+  // Get color corresponding to event level
   const getLevelColor = (level: number) => {
     switch(level) {
       case 1: return 'blue';
@@ -60,7 +60,7 @@ const EventTimeline: React.FC<EventTimelineProps> = ({ events, onEventSelect, se
     }
   };
   
-  // 为每个日期组创建Timeline项目
+  // Create Timeline items for each date group
   const createTimelineItems = (date: string) => {
     return groupedEvents[date].map(event => ({
       key: event.id,
@@ -82,15 +82,15 @@ const EventTimeline: React.FC<EventTimelineProps> = ({ events, onEventSelect, se
           <Space direction="vertical" style={{ width: '100%' }}>
             <Space>
               <Tag color={getLevelColor(event.level)}>
-                级别 {event.level}
+                Level {event.level}
               </Tag>
               <Text type="secondary" style={{ color: isDarkTheme ? '#aaa' : '' }}>
-                {new Date(event.startTime * 1000).toLocaleTimeString('zh-CN', {
+                {new Date(event.startTime * 1000).toLocaleTimeString('en-US', {
                   hour: '2-digit', 
                   minute: '2-digit'
                 })}
                 {event.endTime && (
-                  <span> - {new Date(event.endTime * 1000).toLocaleTimeString('zh-CN', {
+                  <span> - {new Date(event.endTime * 1000).toLocaleTimeString('en-US', {
                     hour: '2-digit',
                     minute: '2-digit'
                   })}</span>
@@ -99,8 +99,8 @@ const EventTimeline: React.FC<EventTimelineProps> = ({ events, onEventSelect, se
               {event.durationType && (
                 <Tag color={event.durationType === 'continuous' ? 'purple' : 
                            event.durationType === 'temporary' ? 'cyan' : 'volcano'}>
-                  {event.durationType === 'continuous' ? '持续性' : 
-                   event.durationType === 'temporary' ? '临时' : '突发'}
+                  {event.durationType === 'continuous' ? 'Continuous' : 
+                   event.durationType === 'temporary' ? 'Temporary' : 'Sudden'}
                 </Tag>
               )}
             </Space>
@@ -136,7 +136,7 @@ const EventTimeline: React.FC<EventTimelineProps> = ({ events, onEventSelect, se
           className="no-events" 
           style={{ color: isDarkTheme ? '#bbb' : '#666' }}
         >
-          没有匹配的事件
+          No matching events
         </div>
       ) : (
         dates.map(date => (

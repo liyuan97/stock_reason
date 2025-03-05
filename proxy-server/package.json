@@ -1,7 +1,7 @@
 {
-  "name": "proxy-server",
+  "name": "yahoo-finance-proxy",
   "version": "1.0.0",
-  "description": "Yahoo Finance API代理服务器",
+  "description": "Yahoo Finance API Proxy Server",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

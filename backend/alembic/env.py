@@ -5,7 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-# 导入应用程序的配置和模型
+# Import application configuration and models
 from app.core.config import settings
 from app.db.base import Base
 
@@ -17,7 +17,7 @@ config = context.config
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 
-# 从应用程序配置中获取数据库URL
+# Get database URL from application configuration
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URI)
 
 # add your model's MetaData object here

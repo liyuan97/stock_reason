@@ -4,26 +4,26 @@ from dotenv import load_dotenv
 import argparse
 import subprocess
 
-# 加载环境变量
+# Load environment variables
 load_dotenv()
 
 def main():
-    parser = argparse.ArgumentParser(description="数据库迁移工具")
-    parser.add_argument("action", choices=["init", "migrate", "upgrade"], help="迁移操作")
-    parser.add_argument("--message", "-m", help="迁移消息")
+    parser = argparse.ArgumentParser(description="Database Migration Tool")
+    parser.add_argument("action", choices=["init", "migrate", "upgrade"], help="Migration operation")
+    parser.add_argument("--message", "-m", help="Migration message")
     args = parser.parse_args()
     
     if args.action == "init":
-        # 初始化迁移
+        # Initialize migration
         subprocess.run(["alembic", "init", "alembic"])
     elif args.action == "migrate":
-        # 生成迁移脚本
+        # Generate migration script
         if not args.message:
-            print("错误: 需要提供迁移消息。使用 -m 'message' 参数")
+            print("Error: Migration message is required. Use -m 'message' parameter")
             sys.exit(1)
         subprocess.run(["alembic", "revision", "--autogenerate", "-m", args.message])
     elif args.action == "upgrade":
-        # 应用迁移
+        # Apply migrations
         subprocess.run(["alembic", "upgrade", "head"])
     
 if __name__ == "__main__":

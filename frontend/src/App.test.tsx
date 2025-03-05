@@ -1,37 +1,52 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 
-// 模拟API服务
+// Mock API service
 jest.mock('./services/api', () => ({
   getStockData: jest.fn().mockResolvedValue({
     symbol: 'AAPL',
-    name: '苹果公司',
+    name: 'Apple Inc.',
     prices: [
-      { time: 1612137600, open: 135.90, high: 136.39, low: 134.92, close: 135.73, volume: 2500000 }
+      { time: 1609459200, open: 132.5, high: 133.2, low: 131.7, close: 132.8, volume: 123456 }
     ],
     events: [
       {
         id: '1',
-        title: '财报发布',
-        description: '公司发布财务报告',
-        time: 1612137600,
-        level: 3,
-        source: '公司新闻',
+        title: 'Earnings Release',
+        description: 'Company releases financial report',
+        time: 1609459200,
+        level: 5,
+        durationType: 'point',
+        source: 'Company News',
+        sourceUrl: 'https://example.com/news/1'
       }
     ]
   }),
-  filterEvents: jest.fn().mockResolvedValue([]),
+  lastDataSource: 'yahoo',
   searchStocks: jest.fn().mockResolvedValue([
-    { symbol: 'AAPL', name: '苹果公司' }
+    { symbol: 'AAPL', name: 'Apple Inc.' }
   ])
 }));
 
-describe('App组件', () => {
-  // 基础渲染测试
-  it('渲染应用标题', async () => {
+describe('App Component', () => {
+  // Basic rendering test
+  it('renders app title', async () => {
     render(<App />);
-    // 因为App组件会异步加载数据，所以使用findByText
-    expect(await screen.findByText(/股票事件追踪/i)).toBeInTheDocument();
+    // Since the App component loads data asynchronously, use findByText
+    expect(await screen.findByText(/Stock Event Tracker/i)).toBeInTheDocument();
+  });
+
+  it('displays loading state initially', () => {
+    render(<App />);
+    expect(screen.getByText(/Loading/i)).toBeInTheDocument();
+  });
+
+  it('displays stock data after loading', async () => {
+    render(<App />);
+    await waitFor(() => {
+      expect(screen.getByText(/AAPL/i)).toBeInTheDocument();
+      expect(screen.getByText(/Apple Inc/i)).toBeInTheDocument();
+    });
   });
 }); 

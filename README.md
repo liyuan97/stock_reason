@@ -1,43 +1,46 @@
-# 股票事件追踪系统 (Stock Event Tracker)
+# Stock Event Tracker
 
-## 产品思路
+![image](WX20250305-181920@2x.png)
 
-市场波动的背后总有原因，但当我们回顾历史行情时，很难记住过去的涨跌背后发生了什么。本系统旨在解决这一问题：将市场事件与股票走势关联起来，帮助投资者更全面地理解市场变动的原因。
 
-核心价值：
-- 直观可视化事件与行情的关联性
-- 按重要程度（1-5级）分类展示事件
-- 帮助投资者形成更完整的市场认知
+## Product Concept
 
-## 设计思路
+There's always a reason behind market fluctuations, but when reviewing historical market data, it's difficult to remember what happened behind past rises and falls. This system aims to solve this problem: connecting market events with stock trends, helping investors understand market changes more comprehensively.
 
-本系统采用前后端分离架构：
+Core values:
+- Intuitive visualization of the correlation between events and market trends
+- Display events categorized by importance (levels 1-5)
+- Help investors form a more complete market understanding
 
-### 前端设计
-- 基于 React + TypeScript  + lightweight-charts
-- 使用 TradingView Lightweight Charts 提供专业级别的金融图表
-- 在图表上以彩色标记展示不同等级的事件
-- 响应式设计，同时支持桌面和移动设备
+## Design Approach
 
-### 后端设计
-- 基于 FastAPI 构建的 RESTful API
-- 使用 SQLAlchemy ORM 进行数据库操作
-- JWT 认证保护 API 端点
-- Redis 缓存优化查询性能
-- 定时任务抓取最新行情数据
-- 基于 LangChain 的 LLM 服务，用于新闻分析和事件提取
+This system uses a front-end and back-end separated architecture:
 
-### 数据流设计
+### Front-end Design
+- Based on React + TypeScript + lightweight-charts
+- Uses TradingView Lightweight Charts to provide professional-level financial charts
+- Displays events of different levels with colored markers on the chart
+- Responsive design, supporting both desktop and mobile devices
+
+### Back-end Design
+- RESTful API built on FastAPI
+- Uses SQLAlchemy ORM for database operations
+- JWT authentication to protect API endpoints
+- Redis caching to optimize query performance
+- Scheduled tasks to fetch the latest market data
+- LLM service based on LangChain for news analysis and event extraction
+
+### Data Flow Design
 ```
-用户请求 → 前端展示 ← API服务 ← 数据库 ← LLM新闻分析
+User Request → Front-end Display ← API Service ← Database ← LLM News Analysis
 ```
 
-## 系统架构图
+## System Architecture Diagram
 
 ```
 +------------------+    +-------------------+    +------------------+
 |                  |    |                   |    |                  |
-|  React 前端      |    |   FastAPI 后端    |    |  PostgreSQL 数据库|
+|  React Frontend  |    |   FastAPI Backend |    |  PostgreSQL DB   |
 |                  |    |                   |    |                  |
 +------------------+    +-------------------+    +------------------+
         ↑                        ↑                        ↑
@@ -45,12 +48,12 @@
         ↓                        ↓                        ↓
 +------------------+    +-------------------+    +------------------+
 |                  |    |                   |    |                  |
-| TradingView      |    | LLM 服务          |    |  Redis 缓存      |
-| Charts           |    | (新闻分析)         |    |                  |
+| TradingView      |    | LLM Service       |    |  Redis Cache     |
+| Charts           |    | (News Analysis)   |    |                  |
 +------------------+    +-------------------+    +------------------+
 ```
 
-## 项目结构
+## Project Structure
 
 ```
 stock_reason/
@@ -101,212 +104,211 @@ stock_reason/
 └── README.md
 ```
 
-## 安装与启动
+## Installation and Setup
 
-### 前端开发环境
+### Front-end Development Environment
 
-1. 克隆仓库
+1. Clone the repository
 ```bash
 git clone https://github.com/yourusername/stock_reason.git
 cd stock_reason/frontend
 ```
 
-2. 安装依赖
+2. Install dependencies
 ```bash
 npm install
 ```
 
-3. 启动开发服务器
+3. Start the development server
 ```bash
 npm start
 ```
 
-4. 在浏览器中访问
+4. Access in browser
 ```
 http://localhost:3000
 ```
 
-### 后端开发环境
+### Back-end Development Environment
 
-1. 进入后端目录
+1. Navigate to the backend directory
 ```bash
 cd stock_reason/backend
 ```
 
-2. 创建虚拟环境
+2. Create a virtual environment
 ```bash
 python -m venv venv
-source venv/bin/activate  # 在Windows上使用 venv\Scripts\activate
+source venv/bin/activate  # On Windows use venv\Scripts\activate
 ```
 
-3. 安装依赖
+3. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-4. 启动后端服务
+4. Start the backend service
 ```bash
 uvicorn app.main:app --reload
 ```
 
-5. 访问API文档
+5. Access API documentation
 ```
 http://localhost:8000/docs
 ```
 
-### 使用Docker部署
+### Deployment with Docker
 
 ```bash
 docker-compose up -d
 ```
 
-## 功能说明
+## Features
 
-### 当前实现功能
+### Currently Implemented Features
 
-1. **股票K线图显示**
-   - 支持缩放和平移
-   - 显示OHLC蜡烛图
-   - 自适应容器大小
+1. **Stock Candlestick Chart Display**
+   - Support for zooming and panning
+   - Display OHLC candlestick chart
+   - Adaptive container size
 
-2. **事件标记与展示**
-   - 在图表上显示1-5级事件标记
-   - 点击标记查看事件详情
-   - 按等级筛选事件显示
+2. **Event Markers and Display**
+   - Display level 1-5 event markers on chart
+   - Click markers to view event details
+   - Filter events by level
 
-3. **股票搜索**
-   - 输入股票代码查询不同股票数据（如AAPL、MSFT等）
+3. **Stock Search**
+   - Input stock code to query different stock data (e.g., AAPL, MSFT)
 
-4. **事件时间线**
-   - 展示所有相关事件的时间线
-   - 点击事件跳转至对应时间点
+4. **Event Timeline**
+   - Display timeline of all related events
+   - Click events to jump to corresponding time point
 
-### 计划功能
+### Planned Features
 
-1. **后端集成**
-   - 实现事件存储和管理API
-   - 通过LLM分析新闻并自动提取事件
+1. **Backend Integration**
+   - Implement event storage and management API
+   - Analyze news and automatically extract events through LLM
 
-2. **数据扩展**
-   - 支持更多市场和指数
-   - 集成更多历史事件数据
+2. **Data Expansion**
+   - Support more markets and indices
+   - Integrate more historical event data
 
-3. **用户功能**
-   - 用户自定义事件添加
-   - 个人收藏和笔记
-   - 事件影响分析报告
-   - 自定义提醒
+3. **User Features**
+   - User-defined event addition
+   - Personal collections and notes
+   - Event impact analysis reports
+   - Custom alerts
 
-4. **社区功能**
-   - 用户贡献事件和评分
-   - 讨论区和评论系统
+4. **Community Features**
+   - User-contributed events and ratings
+   - Discussion area and comment system
 
-## 项目路线图
+## Project Roadmap
 
-### 第一阶段 (MVP) - 2023年Q3
-- ✅ 基础图表展示功能
-- ✅ 静态事件标记和显示
-- ✅ 基本的股票搜索
+### Phase 1 (MVP) - Q3 2023
+- ✅ Basic chart display function
+- ✅ Static event marking and display
+- ✅ Basic stock search
 
-### 第二阶段 - 2023年Q4
-- ✅ 事件时间线功能
-- ✅ 事件筛选功能
-- 🔄 后端API开发
+### Phase 2 - Q4 2023
+- ✅ Event timeline function
+- ✅ Event filtering function
+- 🔄 Backend API development
 
-### 第三阶段 - 2024年Q1
-- 🔄 LLM新闻分析集成
-- 🔄 用户账户系统
-- 🔄 自定义事件添加
+### Phase 3 - Q1 2024
+- 🔄 LLM news analysis integration
+- 🔄 User account system
+- 🔄 Custom event addition
 
-### 第四阶段 - 2024年Q2
-- 📅 社区功能
-- 📅 高级数据分析
-- 📅 移动应用开发
+### Phase 4 - Q2 2024
+- 📅 Community features
+- 📅 Advanced data analysis
+- 📅 Mobile application development
 
-## 接口文档
+## API Documentation
 
-完整的API文档可通过启动后端服务后访问：
+Complete API documentation can be accessed after starting the backend service:
 ```
 http://localhost:8000/docs  # Swagger UI
 http://localhost:8000/redoc  # ReDoc
 ```
 
-### 核心API端点
+### Core API Endpoints
 
-1. 股票数据API
-   - `GET /api/stocks/{symbol}` - 获取指定股票基本信息
-   - `GET /api/stocks/{symbol}/prices` - 获取股票历史价格
-   - `GET /api/stocks/{symbol}/events` - 获取股票相关事件
+1. Stock Data API
+   - `GET /api/stocks/{symbol}` - Get basic information for a specific stock
+   - `GET /api/stocks/{symbol}/prices` - Get stock price history
+   - `GET /api/stocks/{symbol}/events` - Get stock-related events
 
-2. 事件API
-   - `GET /api/events` - 获取所有事件
-   - `POST /api/events` - 创建新事件
-   - `GET /api/events/{id}` - 获取特定事件详情
-   - `PUT /api/events/{id}` - 更新事件
-   - `DELETE /api/events/{id}` - 删除事件
+2. Event API
+   - `GET /api/events` - Get all events
+   - `POST /api/events` - Create a new event
+   - `GET /api/events/{id}` - Get details of a specific event
+   - `PUT /api/events/{id}` - Update an event
+   - `DELETE /api/events/{id}` - Delete an event
 
-3. 用户API
-   - `POST /api/users/register` - 用户注册
-   - `POST /api/users/login` - 用户登录
-   - `GET /api/users/me` - 获取当前用户信息
+3. User API
+   - `POST /api/users/register` - User registration
+   - `POST /api/users/login` - User login
+   - `GET /api/users/me` - Get current user information
 
-## 屏幕截图
+## Screenshots
 
-*此处将添加应用界面截图，展示主要功能*
+*Screenshots of the application interface will be added here, showing the main features*
 
-1. 主界面
-2. 事件标记与详情
-3. 时间线展示
-4. 搜索功能
+1. Main Interface
+2. Event Markers and Details
+3. Timeline Display
+4. Search Function
 
-## 数据来源
+## Data Sources
 
-目前版本使用：
-- 行情数据：Yahoo Finance非官方API
-- 事件数据：模拟生成（后续将接入真实数据）
+Current version uses:
+- Market Data: Unofficial Yahoo Finance API
+- Event Data: Simulated generation (will connect to real data later)
 
-计划接入：
-- 财经新闻源（如新浪财经、东方财富）
-- 公司公告数据
-- 宏观经济数据
+Planned integrations:
+- Financial news sources
+- Company announcement data
+- Macroeconomic data
 
-## 测试策略
+## Testing Strategy
 
-本项目采用多层次测试策略：
+This project adopts a multi-level testing strategy:
 
-1. 单元测试
-   - 前端组件测试：Jest + React Testing Library
-   - 后端函数测试：Pytest
+1. Unit Tests
+   - Frontend component testing: Jest + React Testing Library
+   - Backend function testing: Pytest
 
-2. 集成测试
-   - API端点测试
-   - 数据流测试
+2. Integration Tests
+   - API endpoint testing
+   - Data flow testing
 
-3. 端到端测试
-   - 使用Cypress进行关键用户流程测试
+3. End-to-End Tests
+   - Key user flow testing with Cypress
 
-运行测试：
+Running tests:
 ```bash
-# 前端测试
+# Frontend tests
 cd frontend
 npm test
 
-# 后端测试
+# Backend tests
 cd backend
 pytest
 ```
 
-## 技术栈
+## Technology Stack
 
-### 前端
+### Frontend
 - React 17+
 - TypeScript 4+
 - TradingView Lightweight Charts
-- Axios
-- CSS3 (自定义样式)
+- CSS3 (custom styles)
 - Jest
 
-### 后端
+### Backend
 - Python 3.9+
 - FastAPI
 - SQLAlchemy
@@ -315,83 +317,83 @@ pytest
 - Redis
 - PostgreSQL
 
-## 部署指南
+## Deployment Guide
 
-### 使用Docker部署
+### Deploying with Docker
 
-1. 确保安装了Docker和Docker Compose
-2. 克隆仓库
-3. 配置环境变量（可复制`.env.example`为`.env`并填写配置）
-4. 执行部署命令
+1. Ensure Docker and Docker Compose are installed
+2. Clone the repository
+3. Configure environment variables (can copy `.env.example` to `.env` and fill in configuration)
+4. Execute deployment command
 ```bash
 docker-compose up -d
 ```
 
-### 手动部署
+### Manual Deployment
 
-#### 前端
+#### Frontend
 ```bash
 cd frontend
 npm install
 npm run build
-# 将build目录部署到您的Web服务器
+# Deploy the build directory to your web server
 ```
 
-#### 后端
+#### Backend
 ```bash
 cd backend
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-# 配置环境变量
+# Configure environment variables
 uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
-## 许可证
+## License
 
 MIT
 
-## 贡献指南
+## Contribution Guidelines
 
-我们非常欢迎社区贡献！以下是参与项目的方式：
+We welcome community contributions! Here's how to participate in the project:
 
-### 贡献流程
+### Contribution Process
 
-1. Fork本仓库
-2. 创建您的特性分支 (`git checkout -b feature/amazing-feature`)
-3. 提交您的更改 (`git commit -m 'Add some amazing feature'`)
-4. 将您的更改推送到分支 (`git push origin feature/amazing-feature`)
-5. 打开Pull Request
+1. Fork this repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### 贡献类型
+### Types of Contributions
 
-我们欢迎以下类型的贡献：
-- 代码改进和新功能
-- 文档完善
-- Bug修复
-- 测试用例
-- UI/UX设计改进
-- 新闻源集成
-- 数据分析算法
+We welcome the following types of contributions:
+- Code improvements and new features
+- Documentation improvements
+- Bug fixes
+- Test cases
+- UI/UX design improvements
+- News source integrations
+- Data analysis algorithms
 
-### 代码规范
+### Code Standards
 
-- 请遵循项目现有的代码风格
-- 添加适当的注释
-- 确保通过所有测试
-- 新功能请同时添加测试
+- Please follow the existing code style in the project
+- Add appropriate comments
+- Ensure all tests pass
+- Add tests for new features
 
-### Issue提交
+### Issue Submission
 
-如果您发现了问题但没有时间修复，请提交Issue：
-- 清晰描述问题
-- 提供复现步骤
-- 如可能，附上截图或日志
-- 标记相关标签
+If you find a problem but don't have time to fix it, please submit an Issue:
+- Clearly describe the problem
+- Provide steps to reproduce
+- If possible, attach screenshots or logs
+- Tag with relevant labels
 
-## 联系方式
+## Contact Information
 
-- 项目负责人：[您的姓名]
-- 邮箱：[您的邮箱]
-- 微信：[您的微信]
-- GitHub: [您的GitHub主页] 
+- Project Lead: [Your Name]
+- Email: [Your Email]
+- WeChat: [Your WeChat]
+- GitHub: [Your GitHub Homepage] 

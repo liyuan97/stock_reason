@@ -5,14 +5,14 @@ import { useTheme } from '../../context/ThemeContext';
 const { Option } = Select;
 const { Text } = Typography;
 
-// 预设的股票列表
+// Preset stock list
 const STOCK_OPTIONS = [
-  { symbol: 'AAPL', name: '苹果公司' },
-  { symbol: 'MSFT', name: '微软公司' },
-  { symbol: 'GOOGL', name: '谷歌公司' },
-  { symbol: 'AMZN', name: '亚马逊公司' },
-  { symbol: 'TSLA', name: '特斯拉公司' },
-  { symbol: 'BABA', name: '阿里巴巴' }
+  { symbol: 'AAPL', name: 'Apple Inc.' },
+  { symbol: 'MSFT', name: 'Microsoft Corporation' },
+  { symbol: 'GOOGL', name: 'Google (Alphabet Inc.)' },
+  { symbol: 'AMZN', name: 'Amazon.com Inc.' },
+  { symbol: 'TSLA', name: 'Tesla Inc.' },
+  { symbol: 'BABA', name: 'Alibaba Group Holding Ltd.' }
 ];
 
 interface SearchBarProps {
@@ -23,7 +23,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSelect }) => {
   const { currentTheme } = useTheme();
   const isDarkTheme = currentTheme === 'dark';
   
-  // 选择股票
+  // Select stock
   const handleSelectStock = (value: string) => {
     onSelect(value);
   };
@@ -31,7 +31,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSelect }) => {
   return (
     <div className="stock-select-container">
       <Text strong style={{ marginRight: '12px', color: isDarkTheme ? '#e0e0e0' : '#333' }}>
-        选择股票：
+        Select Stock:
       </Text>
       <Select
         defaultValue="AAPL"

@@ -7,10 +7,10 @@ interface EventDetailProps {
 }
 
 const EventDetail: React.FC<EventDetailProps> = ({ event, onClose }) => {
-  // 格式化时间戳为可读的日期时间
+  // Format timestamp to readable date time
   const formatDate = (timestamp: number): string => {
-    const date = new Date(timestamp * 1000); // 转换为毫秒
-    return date.toLocaleString('zh-CN', {
+    const date = new Date(timestamp * 1000); // Convert to milliseconds
+    return date.toLocaleString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -19,7 +19,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event, onClose }) => {
     });
   };
   
-  // 根据事件等级返回样式类名
+  // Return style class name based on event level
   const getLevelClassName = (): string => {
     return `event-level event-level-${event.level}`;
   };
@@ -33,18 +33,18 @@ const EventDetail: React.FC<EventDetailProps> = ({ event, onClose }) => {
       
       <div className="event-detail-content">
         <div className="event-meta">
-          <span className={getLevelClassName()}>重要程度: {event.level}</span>
+          <span className={getLevelClassName()}>Importance: {event.level}</span>
           <span className="event-date">{formatDate(event.startTime)}</span>
           {event.endTime && (
             <span className="event-duration">
-              结束时间: {formatDate(event.endTime)}
+              End time: {formatDate(event.endTime)}
             </span>
           )}
           {event.sources && event.sources.length > 0 && (
-            <span className="event-source">来源: {event.sources.join(', ')}</span>
+            <span className="event-source">Source: {event.sources.join(', ')}</span>
           )}
           {event.category && (
-            <span className="event-category">分类: {getCategoryName(event.category)}</span>
+            <span className="event-category">Category: {getCategoryName(event.category)}</span>
           )}
         </div>
         
@@ -52,12 +52,12 @@ const EventDetail: React.FC<EventDetailProps> = ({ event, onClose }) => {
         
         {event.urls && event.urls.length > 0 && (
           <div className="event-links">
-            <h4>相关链接:</h4>
+            <h4>Related links:</h4>
             <ul>
               {event.urls.map((url, index) => (
                 <li key={index}>
                   <a href={url} target="_blank" rel="noopener noreferrer">
-                    查看详情 {event.urls && event.urls.length > 1 ? `(${index + 1})` : ''}
+                    View details {event.urls && event.urls.length > 1 ? `(${index + 1})` : ''}
                   </a>
                 </li>
               ))}
@@ -69,13 +69,13 @@ const EventDetail: React.FC<EventDetailProps> = ({ event, onClose }) => {
   );
 };
 
-// 获取分类的中文名称
+// Get category name in English
 const getCategoryName = (category: string): string => {
   const categoryMap: Record<string, string> = {
-    'company': '公司自身因素',
-    'industry': '行业因素',
-    'macroeconomic': '宏观经济政策',
-    'market_sentiment': '市场情绪/外部事件'
+    'company': 'Company Factors',
+    'industry': 'Industry Factors',
+    'macroeconomic': 'Macroeconomic Policies',
+    'market_sentiment': 'Market Sentiment/External Events'
   };
   
   return categoryMap[category] || category;

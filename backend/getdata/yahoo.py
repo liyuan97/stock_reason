@@ -2,44 +2,44 @@ import yfinance as yf
 import pandas as pd
 from datetime import datetime
 
-# 定义股票选项
+# Define stock options
 STOCK_OPTIONS = [
-    { 'symbol': 'AAPL', 'name': '苹果公司' },
-    { 'symbol': 'MSFT', 'name': '微软公司' },
-    { 'symbol': 'GOOGL', 'name': '谷歌公司' },
-    { 'symbol': 'AMZN', 'name': '亚马逊公司' },
-    { 'symbol': 'TSLA', 'name': '特斯拉公司' },
-    { 'symbol': 'BABA', 'name': '阿里巴巴' }
+    { 'symbol': 'AAPL', 'name': 'Apple Inc.' },
+    { 'symbol': 'MSFT', 'name': 'Microsoft Corporation' },
+    { 'symbol': 'GOOGL', 'name': 'Google (Alphabet Inc.)' },
+    { 'symbol': 'AMZN', 'name': 'Amazon.com Inc.' },
+    { 'symbol': 'TSLA', 'name': 'Tesla Inc.' },
+    { 'symbol': 'BABA', 'name': 'Alibaba Group Holding Ltd.' }
 ]
 
-# 设置时间范围（当前日期为 2025-03-01，获取过去一年数据）
+# Set time range (current date is 2025-03-01, get data for the past year)
 start_date = "2021-03-01"
 end_date = "2025-03-01"
 
-# 遍历股票并下载数据
+# Iterate through stocks and download data
 for stock in STOCK_OPTIONS:
     symbol = stock['symbol']
     name = stock['name']
-    print(f"正在下载 {name} ({symbol}) 的数据...")
+    print(f"Downloading data for {name} ({symbol})...")
     
     try:
-        # 下载股票数据
+        # Download stock data
         stock_data = yf.download(symbol, start=start_date, end=end_date)
         
-        # 检查是否成功获取数据
+        # Check if data was successfully retrieved
         if not stock_data.empty:
-            # 保存到 CSV 文件，文件名包含股票代码
+            # Save to CSV file with stock code in filename
             filename = f"data/{symbol}_stock_data.csv"
             stock_data.to_csv(filename)
-            print(f"{name} ({symbol}) 数据已保存到 {filename}")
+            print(f"{name} ({symbol}) data saved to {filename}")
             
-            # 打印前几行数据（可选）
+            # Print first few rows (optional)
             print(stock_data.head())
             print("\n")
         else:
-            print(f"无法获取 {name} ({symbol}) 的数据，可能是日期范围无效或股票代码错误。")
+            print(f"Unable to get data for {name} ({symbol}), possibly due to invalid date range or stock code.")
             
     except Exception as e:
-        print(f"下载 {name} ({symbol}) 时出错: {e}")
+        print(f"Error while downloading {name} ({symbol}): {e}")
 
-print("所有股票数据下载完成！")
+print("All stock data download completed!")

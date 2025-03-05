@@ -7,21 +7,21 @@ interface EventMarkerProps {
   selected?: boolean;
 }
 
-// 根据事件级别返回颜色
+// Return color based on event level
 const getLevelColor = (level: EventLevel): string => {
   switch (level) {
     case 1:
-      return '#2196F3'; // 蓝色 - 信息
+      return '#2196F3'; // Blue - Information
     case 2:
-      return '#4CAF50'; // 绿色 - 积极
+      return '#4CAF50'; // Green - Positive
     case 3:
-      return '#FFC107'; // 黄色 - 警告
+      return '#FFC107'; // Yellow - Warning
     case 4:
-      return '#FF9800'; // 橙色 - 重要
+      return '#FF9800'; // Orange - Important
     case 5:
-      return '#F44336'; // 红色 - 严重
+      return '#F44336'; // Red - Critical
     default:
-      return '#2196F3'; // 默认蓝色
+      return '#2196F3'; // Default blue
   }
 };
 

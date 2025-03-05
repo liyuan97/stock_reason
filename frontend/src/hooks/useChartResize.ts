@@ -1,14 +1,14 @@
 import { useEffect, useCallback, RefObject } from 'react';
 import useWindowSize from './useWindowSize';
 
-// 用于处理图表容器尺寸变化的自定义Hook
+// Custom Hook for handling chart container size changes
 const useChartResize = (
   containerRef: RefObject<HTMLDivElement | null>,
   onResize: (width: number, height: number) => void
 ): void => {
   const windowSize = useWindowSize();
   
-  // 重设图表尺寸
+  // Resize the chart
   const resizeChart = useCallback(() => {
     if (containerRef.current) {
       const { clientWidth, clientHeight } = containerRef.current;
@@ -16,7 +16,7 @@ const useChartResize = (
     }
   }, [containerRef, onResize]);
   
-  // 监听窗口尺寸变化
+  // Listen for window size changes
   useEffect(() => {
     resizeChart();
   }, [windowSize, resizeChart]);

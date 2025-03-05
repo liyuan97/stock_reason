@@ -6,7 +6,7 @@ import { useTheme } from '../../context/ThemeContext';
 const { Text, Link } = Typography;
 
 interface DataSourceInfoProps {
-  dataSource: 'yahoo' | 'mock';
+  dataSource: 'yahoo' | 'mock' | 'alphavantage';
 }
 
 const DataSourceInfo: React.FC<DataSourceInfoProps> = ({ dataSource }) => {
@@ -28,13 +28,23 @@ const DataSourceInfo: React.FC<DataSourceInfoProps> = ({ dataSource }) => {
           </Text>
         </>
       );
+    } else if (dataSource === 'alphavantage') {
+      return (
+        <>
+          <Text strong>实时数据来源：</Text> 当前显示的是来自Alpha Vantage的真实股票数据。
+          <br />
+          <Text type="secondary">
+            注意：事件数据仍为模拟数据，仅用于演示目的。
+          </Text>
+        </>
+      );
     } else {
       return (
         <>
           <Text strong>模拟数据提示：</Text> 当前显示的是模拟数据，非真实股票数据。
           <br />
           <Text type="secondary">
-            无法连接到雅虎财经API，可能是由于网络问题或代理服务器未运行。
+            无法连接到实时API，可能是由于网络问题或代理服务器未运行。
           </Text>
         </>
       );

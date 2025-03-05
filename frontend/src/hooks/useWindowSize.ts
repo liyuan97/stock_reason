@@ -5,7 +5,7 @@ interface WindowSize {
   height: number;
 }
 
-// 自定义Hook用于监听窗口大小变化
+// Custom Hook to monitor window size changes
 const useWindowSize = (): WindowSize => {
   const [windowSize, setWindowSize] = useState<WindowSize>({
     width: window.innerWidth,
@@ -13,7 +13,7 @@ const useWindowSize = (): WindowSize => {
   });
 
   useEffect(() => {
-    // 处理窗口大小变化的函数
+    // Function to handle window size changes
     const handleResize = () => {
       setWindowSize({
         width: window.innerWidth,
@@ -21,10 +21,10 @@ const useWindowSize = (): WindowSize => {
       });
     };
 
-    // 添加事件监听器
+    // Add event listener
     window.addEventListener('resize', handleResize);
     
-    // 清理函数
+    // Cleanup function
     return () => {
       window.removeEventListener('resize', handleResize);
     };

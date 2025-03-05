@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { ConfigProvider, theme } from 'antd';
 
 type ThemeType = 'light' | 'dark';
@@ -8,20 +8,19 @@ interface ThemeContextType {
   toggleTheme: () => void;
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+const ThemeContext = createContext<ThemeContextType>({
+  currentTheme: 'light',
+  toggleTheme: () => {},
+});
 
-interface ThemeProviderProps {
-  children: ReactNode;
-}
-
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  // 从localStorage读取主题或使用默认亮色主题
+export const ThemeProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
+  // Read theme from localStorage or use default light theme
   const [currentTheme, setCurrentTheme] = useState<ThemeType>(() => {
     const savedTheme = localStorage.getItem('theme');
     return (savedTheme as ThemeType) || 'light';
   });
 
-  // 切换主题
+  // Toggle theme
   const toggleTheme = () => {
     setCurrentTheme(prevTheme => {
       const newTheme = prevTheme === 'light' ? 'dark' : 'light';
@@ -29,42 +28,31 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     });
   };
 
-  // 当主题改变时，保存到localStorage
+  // When theme changes, save to localStorage
   useEffect(() => {
     localStorage.setItem('theme', currentTheme);
-    
-    // 设置HTML根元素的data-theme属性，用于全局CSS变量
+  }, [currentTheme]);
+
+  // Set data-theme attribute on HTML root element, used for global CSS variables
+  useEffect(() => {
     document.documentElement.setAttribute('data-theme', currentTheme);
   }, [currentTheme]);
 
-  // Ant Design 主题配置
+  // Ant Design theme configuration
   const { defaultAlgorithm, darkAlgorithm } = theme;
 
-  // 根据当前主题选择算法
-  const themeAlgorithm = currentTheme === 'dark' ? darkAlgorithm : defaultAlgorithm;
+  // Select algorithm based on current theme
+  const algorithm = currentTheme === 'dark' ? darkAlgorithm : defaultAlgorithm;
 
   return (
-    <ThemeContext.Provider value={{ currentTheme, toggleTheme }}>
-      <ConfigProvider
-        theme={{
-          algorithm: themeAlgorithm,
-          token: {
-            colorPrimary: '#1e88e5',
-            borderRadius: 4,
-          },
-        }}
-      >
+    <ConfigProvider
+      theme={{ algorithm }}
+    >
+      <ThemeContext.Provider value={{ currentTheme, toggleTheme }}>
         {children}
-      </ConfigProvider>
-    </ThemeContext.Provider>
+      </ThemeContext.Provider>
+    </ConfigProvider>
   );
 };
 
-// 自定义hook，用于在组件中访问主题上下文
-export const useTheme = (): ThemeContextType => {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider');
-  }
-  return context;
-}; 
+export const useTheme = () => useContext(ThemeContext); 

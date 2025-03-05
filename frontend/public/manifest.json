@@ -1,6 +1,6 @@
 {
-  "short_name": "股票事件追踪",
-  "name": "股票事件追踪系统",
+  "short_name": "Stock Events",
+  "name": "Stock Event Tracking System",
   "icons": [
     {
       "src": "favicon.ico",

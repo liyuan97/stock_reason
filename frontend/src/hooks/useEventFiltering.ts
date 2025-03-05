@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { StockEvent, EventLevel } from '../types';
 
-// 用于处理事件过滤的自定义Hook
+// Custom Hook for handling event filtering
 const useEventFiltering = (
   events: StockEvent[], 
   initialLevel?: EventLevel
@@ -9,7 +9,7 @@ const useEventFiltering = (
   const [filteredLevel, setFilteredLevel] = useState<EventLevel | undefined>(initialLevel);
   const [filteredEvents, setFilteredEvents] = useState<StockEvent[]>(events);
   
-  // 过滤事件
+  // Filter events
   useEffect(() => {
     if (filteredLevel) {
       setFilteredEvents(events.filter(event => event.level === filteredLevel));
@@ -18,12 +18,12 @@ const useEventFiltering = (
     }
   }, [events, filteredLevel]);
   
-  // 设置过滤级别
+  // Set filter level
   const setFilter = useCallback((level?: EventLevel) => {
     setFilteredLevel(level);
   }, []);
   
-  // 重置过滤器
+  // Reset filter
   const resetFilter = useCallback(() => {
     setFilteredLevel(undefined);
   }, []);

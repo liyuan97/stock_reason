@@ -1,17 +1,17 @@
-// jest-dom 添加自定义的 jest 匹配器，用于断言 DOM 节点状态
-// 允许做类似 expect(element).toHaveTextContent(/react/i) 的断言
-// 更多详情: https://github.com/testing-library/jest-dom
+// jest-dom adds custom jest matchers for asserting on DOM nodes
+// allows you to do things like expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
 
-// 模拟window.matchMedia - 为了修复Lightweight Charts的测试问题
+// Mock window.matchMedia - to fix Lightweight Charts testing issues
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: jest.fn().mockImplementation(query => ({
     matches: false,
     media: query,
     onchange: null,
-    addListener: jest.fn(), // 兼容旧API
-    removeListener: jest.fn(), // 兼容旧API
+    addListener: jest.fn(), // compatible with old API
+    removeListener: jest.fn(), // compatible with old API
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
     dispatchEvent: jest.fn(),

@@ -15,30 +15,30 @@ const EventRegionManager: React.FC = () => {
     eventOverlaysRef
   } = useChartContext();
 
-  // 创建持续性事件区域
+  // Create continuous event regions
   useEffect(() => {
     if (!chartRef.current || !seriesRef.current || events.length === 0) return;
     
-    // 清除现有的事件区域
+    // Clear existing event regions
     cleanupEventOverlays();
     
-    // 对事件按照startTime进行升序排序，确保时间顺序正确
+    // Sort events by startTime in ascending order to ensure correct time sequence
     const sortedEvents = [...events].sort((a, b) => a.startTime - b.startTime);
     
-    // 处理持续性事件
+    // Process continuous events
     sortedEvents.forEach(event => {
-      // 如果是持续性事件且有结束时间，创建区域标记
+      // If it's a continuous event with an end time, create a region marker
       if (event.durationType === 'continuous' && event.endTime && chartRef.current) {
-        // 捕获当前图表引用，避免在timeout中引用可能变化的值
+        // Capture current chart reference to avoid referencing potentially changing values in timeout
         const currentChart = chartRef.current;
         const currentContainer = chartContainerRef.current;
         
-        // 延迟创建覆盖层，确保时间坐标系统已准备好
+        // Delay creating overlays to ensure the time coordinate system is ready
         setTimeout(() => {
           try {
-            // 确保图表和容器仍然存在
+            // Ensure chart and container still exist
             if (!currentChart || !currentContainer || currentChart !== chartRef.current) {
-              console.log('图表实例已变更，取消创建区域覆盖层');
+              console.log('Chart instance has changed, canceling region overlay creation');
               return;
             }
             
@@ -54,18 +54,18 @@ const EventRegionManager: React.FC = () => {
               overlay.style.position = 'absolute';
               overlay.style.left = `${startCoord}px`;
               overlay.style.width = `${endCoord - startCoord}px`;
-              overlay.style.top = '25px'; // 从顶部留出一些空间，以免遮挡标记
-              overlay.style.height = 'calc(100% - 50px)'; // 确保不会遮挡底部刻度
-              overlay.style.backgroundColor = `${color}30`; // 30% 透明度
-              overlay.style.pointerEvents = 'auto'; // 允许鼠标事件
-              overlay.style.zIndex = '2'; // 确保在价格线之上，但在标记之下
-              overlay.style.cursor = 'pointer'; // 鼠标变为手型
-              overlay.style.transition = 'background-color 0.2s ease'; // 添加过渡效果
-              overlay.style.borderLeft = `2px solid ${color}`; // 添加左边框
-              overlay.style.borderRight = `2px solid ${color}`; // 添加右边框
-              overlay.title = `${event.title} (${new Date(event.startTime * 1000).toLocaleDateString()} - ${event.endTime ? new Date(event.endTime * 1000).toLocaleDateString() : '至今'})`;
+              overlay.style.top = '25px'; // Leave some space from the top to avoid obscuring markers
+              overlay.style.height = 'calc(100% - 50px)'; // Ensure it doesn't obscure bottom scale
+              overlay.style.backgroundColor = `${color}30`; // 30% transparency
+              overlay.style.pointerEvents = 'auto'; // Allow mouse events
+              overlay.style.zIndex = '2'; // Ensure it's above price lines but below markers
+              overlay.style.cursor = 'pointer'; // Change cursor to pointer
+              overlay.style.transition = 'background-color 0.2s ease'; // Add transition effect
+              overlay.style.borderLeft = `2px solid ${color}`; // Add left border
+              overlay.style.borderRight = `2px solid ${color}`; // Add right border
+              overlay.title = `${event.title} (${new Date(event.startTime * 1000).toLocaleDateString()} - ${event.endTime ? new Date(event.endTime * 1000).toLocaleDateString() : 'Present'})`;
               
-              // 添加横线标识事件区域的开始和结束
+              // Add horizontal lines to identify the start and end of the event region
               const topLine = document.createElement('div');
               topLine.style.position = 'absolute';
               topLine.style.top = '0';
@@ -118,14 +118,14 @@ const EventRegionManager: React.FC = () => {
                 tooltip.innerHTML = `
                   <div style="font-weight: bold; margin-bottom: 4px; color:${color};">${event.title}</div>
                   <div style="font-size: 12px; margin-bottom: 4px;">
-                    持续时间: ${new Date(event.startTime * 1000).toLocaleDateString()} - 
-                    ${event.endTime ? new Date(event.endTime * 1000).toLocaleDateString() : '至今'}
+                    Duration: ${new Date(event.startTime * 1000).toLocaleDateString()} - 
+                    ${event.endTime ? new Date(event.endTime * 1000).toLocaleDateString() : 'Present'}
                   </div>
                   <div style="font-size: 12px; margin-bottom: 4px;">
-                    重要性级别: ${event.level} / 5
+                    Importance Level: ${event.level} / 5
                   </div>
-                  <div style="font-size: 12px;">${event.description ? event.description : '无描述'}</div>
-                  <div style="font-size: 10px; text-align: center; margin-top: 8px; font-style: italic;">点击查看更多详情</div>
+                  <div style="font-size: 12px;">${event.description ? event.description : 'No description'}</div>
+                  <div style="font-size: 10px; text-align: center; margin-top: 8px; font-style: italic;">Click for more details</div>
                 `;
                 
                 // 添加到容器中
@@ -154,17 +154,17 @@ const EventRegionManager: React.FC = () => {
               eventOverlaysRef.current.push(overlay as any);
             }
           } catch (e) {
-            console.error('创建事件区域覆盖层时出错:', e);
+            console.error('Error creating event region overlay:', e);
           }
-        }, 300); // 给图表更多时间来计算坐标
+        }, 300); // Give chart more time to calculate coordinates
       }
     });
     
     return () => {
-      // 清除所有事件区域
+      // Clear all event regions
       cleanupEventOverlays();
     };
-  }, [events, currentTheme, onEventClick, chartRef, chartContainerRef, cleanupEventOverlays, eventOverlaysRef]);
+  }, [events, currentTheme, onEventClick, chartRef, chartContainerRef, cleanupEventOverlays, eventOverlaysRef, seriesRef]);
 
   return null; // This is a logic-only component
 };

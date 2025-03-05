@@ -10,63 +10,66 @@ const ChartScaleManager: React.FC = () => {
     cleanupEventOverlays 
   } = useChartContext();
 
-  // 处理图表缩放或平移时更新事件标记和连续事件区域
+  // Handle updating event markers and continuous event areas when chart is zoomed or panned
   useEffect(() => {
-    // 创建一个跟踪变量，用于防止在组件卸载后的异步操作
+    // Create a tracking variable to prevent async operations after component unmount
     let isComponentMounted = true;
     
     if (chartRef.current && seriesRef.current) {
       const handleScaleChange = () => {
-        // 如果组件已卸载或图表已处置，不要执行任何操作
+        // If component is unmounted or chart is disposed, don't perform any operation
         if (!isComponentMounted || !chartRef.current || !seriesRef.current) {
           return;
         }
         
-        console.log('图表缩放或平移，重新渲染事件标记和区域');
+        console.log('Chart zoomed or panned, re-rendering event markers and areas');
         
-        // 当图表缩放或平移时，重新计算并更新连续事件区域
-        // 清理现有覆盖层
+        // When chart is zoomed or panned, recalculate and update continuous event areas
+        // Clean up existing overlays
         cleanupEventOverlays();
         
-        // 确保标记仍然可见
+        // Ensure markers are still visible
         if (events.length > 0 && seriesRef.current) {
-          // 保存当前的series引用，避免在timeout内它变为null
+          // Save current series reference to avoid it becoming null in timeout
           const currentSeries = seriesRef.current;
           
-          // 使用延迟确保缩放操作已完成
+          // Use delay to ensure zoom operation is completed
           setTimeout(() => {
-            // 再次检查组件和图表是否仍然存在
+            // Check again if component and chart still exist
             if (!isComponentMounted || !chartRef.current) {
               return;
             }
             
             try {
-              // 重新创建事件标记
+              // Recreate event markers
               const markers = createEventMarkers(events);
               
-              // 设置标记
+              // Set markers
               if (currentSeries) {
                 currentSeries.setMarkers(markers);
-                console.log(`缩放/平移后: 重新渲染了 ${markers.length} 个事件标记`);
+                console.log(`After zoom/pan: Rerendered ${markers.length} event markers`);
               }
             } catch (e) {
               console.error('Error redrawing markers on scale change:', e);
             }
-          }, 300); // 增加延迟以确保缩放完成
+          }, 300); // Increase delay to ensure zoom is completed
         }
       };
       
-      // 订阅缩放事件
+      // Subscribe to zoom events
       chartRef.current.timeScale().subscribeVisibleTimeRangeChange(handleScaleChange);
       
+      // Store chart reference to use in cleanup
+      const chart = chartRef.current;
+      
       return () => {
-        // 设置卸载标志
+        // Set unmount flag
         isComponentMounted = false;
         
-        // 取消订阅
+        // Unsubscribe
         try {
-          if (chartRef.current) {
-            chartRef.current.timeScale().unsubscribeVisibleTimeRangeChange(handleScaleChange);
+          if (chart) {
+            chart.timeScale().unsubscribeVisibleTimeRangeChange(handleScaleChange);
           }
         } catch (e) {
           console.error('Error unsubscribing from scale change:', e);

@@ -1,98 +1,98 @@
-// 测试代理服务器的简单脚本
+// Simple script to test the proxy server
 const axios = require('axios');
 
 const PROXY_SERVER_URL = 'http://localhost:3001';
 
-// 测试获取股票数据
+// Test getting stock data
 async function testGetStockData(symbol) {
   try {
-    console.log(`测试获取股票数据: ${symbol}`);
+    console.log(`Testing stock data retrieval: ${symbol}`);
     const response = await axios.get(`${PROXY_SERVER_URL}/api/yahoo/chart/${symbol}`);
     
     if (response.data && response.data.chart && response.data.chart.result) {
-      console.log(`成功获取 ${symbol} 数据!`);
-      console.log(`数据点数量: ${response.data.chart.result[0].timestamp.length}`);
+      console.log(`Successfully retrieved ${symbol} data!`);
+      console.log(`Number of data points: ${response.data.chart.result[0].timestamp.length}`);
       return true;
     } else {
-      console.error('响应格式不正确');
+      console.error('Invalid response format');
       return false;
     }
   } catch (error) {
-    console.error(`获取股票数据失败: ${error.message}`);
+    console.error(`Failed to get stock data: ${error.message}`);
     return false;
   }
 }
 
-// 测试搜索功能
+// Test search functionality
 async function testSearch(query) {
   try {
-    console.log(`测试搜索: ${query}`);
+    console.log(`Testing search: ${query}`);
     const response = await axios.get(`${PROXY_SERVER_URL}/api/yahoo/search`, {
       params: { q: query }
     });
     
     if (response.data && response.data.quotes) {
-      console.log(`成功搜索 "${query}"!`);
-      console.log(`结果数量: ${response.data.quotes.length}`);
-      console.log('搜索结果:', response.data.quotes.map(q => q.symbol).join(', '));
+      console.log(`Successfully searched "${query}"!`);
+      console.log(`Number of results: ${response.data.quotes.length}`);
+      console.log('Search results:', response.data.quotes.map(q => q.symbol).join(', '));
       return true;
     } else {
-      console.error('响应格式不正确');
+      console.error('Invalid response format');
       return false;
     }
   } catch (error) {
-    console.error(`搜索失败: ${error.message}`);
+    console.error(`Search failed: ${error.message}`);
     return false;
   }
 }
 
-// 测试健康检查
+// Test health check
 async function testHealth() {
   try {
-    console.log('测试健康检查端点');
+    console.log('Testing health check endpoint');
     const response = await axios.get(`${PROXY_SERVER_URL}/health`);
     
     if (response.data && response.data.status === 'ok') {
-      console.log('健康检查成功!');
-      console.log(`服务器时间: ${response.data.timestamp}`);
+      console.log('Health check successful!');
+      console.log(`Server time: ${response.data.timestamp}`);
       return true;
     } else {
-      console.error('健康检查响应格式不正确');
+      console.error('Invalid health check response format');
       return false;
     }
   } catch (error) {
-    console.error(`健康检查失败: ${error.message}`);
+    console.error(`Health check failed: ${error.message}`);
     return false;
   }
 }
 
-// 运行所有测试
+// Run all tests
 async function runAllTests() {
-  console.log('开始测试代理服务器...\n');
+  console.log('Starting proxy server tests...\n');
   
-  // 测试健康检查
+  // Test health check
   const healthResult = await testHealth();
-  console.log(healthResult ? '✅ 健康检查测试通过' : '❌ 健康检查测试失败');
+  console.log(healthResult ? '✅ Health check test passed' : '❌ Health check test failed');
   console.log('------------------------\n');
   
-  // 测试获取股票数据
+  // Test stock data retrieval
   const stockSymbols = ['AAPL', 'MSFT', 'GOOG'];
   for (const symbol of stockSymbols) {
     const stockResult = await testGetStockData(symbol);
-    console.log(stockResult ? `✅ ${symbol} 数据获取测试通过` : `❌ ${symbol} 数据获取测试失败`);
+    console.log(stockResult ? `✅ ${symbol} data retrieval test passed` : `❌ ${symbol} data retrieval test failed`);
     console.log('------------------------\n');
   }
   
-  // 测试搜索功能
+  // Test search functionality
   const searchQueries = ['apple', 'tsla', 'amazon'];
   for (const query of searchQueries) {
     const searchResult = await testSearch(query);
-    console.log(searchResult ? `✅ "${query}" 搜索测试通过` : `❌ "${query}" 搜索测试失败`);
+    console.log(searchResult ? `✅ "${query}" search test passed` : `❌ "${query}" search test failed`);
     console.log('------------------------\n');
   }
   
-  console.log('测试完成!');
+  console.log('Tests completed!');
 }
 
-// 执行测试
+// Execute tests
 runAllTests(); 

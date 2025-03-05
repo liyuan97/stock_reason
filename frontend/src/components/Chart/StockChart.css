@@ -1,4 +1,4 @@
-/* 事件区域样式 */
+/* Event area styles */
 .event-region-overlay {
   transition: background-color 0.2s ease;
 }
@@ -7,7 +7,7 @@
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
-/* 事件工具提示样式 */
+/* Event tooltip styles */
 .event-tooltip {
   position: absolute;
   background-color: var(--tooltip-bg, white);
@@ -21,7 +21,7 @@
   transition: opacity 0.2s ease;
 }
 
-/* 点事件特有的工具提示样式 */
+/* Point event specific tooltip styles */
 .point-event-tooltip {
   animation: fadeInPoint 0.15s ease;
   pointer-events: none;
@@ -37,7 +37,7 @@
   to { opacity: 1; transform: translateY(0) translateX(-50%); }
 }
 
-/* 事件标记样式 */
+/* Event marker styles */
 .event-marker {
   cursor: pointer;
   transition: transform 0.2s ease;

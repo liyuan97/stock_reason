@@ -29,8 +29,8 @@ htmlcov/
 
 # uv
 .uv/
-# 我们希望追踪uv.lock以确保依赖版本一致
-# uv.lock
+# We want to track uv.lock to ensure consistent dependency versions
+!backend/uv.lock
 
 # FastAPI
 .env
@@ -99,7 +99,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# 其他
+# Other
 .dockerignore
 .git/
 .github/ 
